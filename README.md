@@ -3,4 +3,4 @@ Capstone project
 Members:
 Lemuel Gjannie Cataquiz
 Yusen Chen
-
+Shadman Thakur
