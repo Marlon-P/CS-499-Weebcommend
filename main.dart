@@ -40,7 +40,12 @@ List<String> why;
     @override
     Widget build(BuildContext context) {
       return
-        Scaffold(body: Container(
+        Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.blue[233],
+            title: Dropdown(),
+          ),
+            body: Container(
           child: FutureBuilder(
             future: no,
             builder: (context,snapshot){
@@ -60,6 +65,30 @@ List<String> why;
 
 
 
+}
+
+
+
+class Dropdown extends StatefulWidget {
+
+  Dropdown({Key key}) : super (key: key);
+
+  @override
+  _DropdownState createState() => _DropdownState();
+}
+
+class _DropdownState extends State<Dropdown> {
+  String x = 'genre';
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      value: x,
+      onChanged: (String newValue){setState(() {
+        x = newValue;
+      });},
+      items: <String>['genre','horror','adventure','mystery'].map<DropdownMenuItem<String>>((String value) {return DropdownMenuItem<String>(value: value, child: Text(value));}).toList()
+    );
+  }
 }
 
 
