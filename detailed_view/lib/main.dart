@@ -22,15 +22,15 @@ class _AnimeDetailState extends State<AnimeDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade800,
+      backgroundColor: Colors.grey.shade900,
       appBar: AppBar(
-        backgroundColor: Colors.grey.shade900,
+        backgroundColor: Colors.orange,
         title: FlatButton(
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           onPressed: () {}, // code for back button
           child: Icon(
             Icons.arrow_back,
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
       ),
@@ -38,7 +38,7 @@ class _AnimeDetailState extends State<AnimeDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
+            Wrap(
               children: [
                 Image.network(
                   'https://cdn.myanimelist.net/images/anime/7/88019.jpg?s=79b1142c4818577b9925017b0240131a',
@@ -49,55 +49,78 @@ class _AnimeDetailState extends State<AnimeDetail> {
                 // SizedBox(
                 //   width: 20,
                 // ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                      color: Colors.grey.shade900,
-                      child: Text(
-                        'Title: Overlord',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                Container(
+                  color: Colors.grey.shade900,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                        color: Colors.grey.shade900,
+                        child: Text(
+                          'Title: Overlord',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 40),
+                        ),
                       ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-                      color: Colors.grey.shade900,
-                      child: Text(
-                        'Type: TV',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                      SizedBox(
+                        height: 5,
                       ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                      color: Colors.grey.shade900,
-                      child: Text(
-                        'Episodes: 13',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 2, horizontal: 12),
+                        color: Colors.grey.shade900,
+                        child: Text(
+                          'Type: TV',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-                      color: Colors.grey.shade900,
-                      child: Text(
-                        'Rating Score: 7.98',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                      SizedBox(
+                        height: 5,
                       ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-                      color: Colors.grey.shade900,
-                      child: Text(
-                        'Rated: R',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                        color: Colors.grey.shade900,
+                        child: Text(
+                          'Episodes: 13',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 2, horizontal: 12),
+                        color: Colors.grey.shade900,
+                        child: Text(
+                          'Rating Score: 7.98',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 2, horizontal: 12),
+                        color: Colors.grey.shade900,
+                        child: Text(
+                          'Rated: R',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),
@@ -106,15 +129,17 @@ class _AnimeDetailState extends State<AnimeDetail> {
               color: Colors.grey.shade900,
               child: Text(
                 'Synopsis:',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
                 textAlign: TextAlign.left,
               ),
             ),
             SizedBox(
-              height: 2,
+              height: 10,
               child: Divider(
-                color: Colors.white,
+                color: Colors.orange,
               ),
             ),
             Container(
@@ -122,8 +147,7 @@ class _AnimeDetailState extends State<AnimeDetail> {
               color: Colors.grey.shade900,
               child: Text(
                 'The final hour of the popular virtual reality game Yggdrasil has come. However, Momonga, a powerful wizard and master of the dark guild Ainz Ooal Gown, decides to spend his last few moments in the game as the servers begin to shut down. To his surprise, despite the clock having struck midnight, Momonga is still fully conscious as his character and, moreover, the non-player characters appear to have developed personalities of their own!',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.white, fontSize: 18),
                 textAlign: TextAlign.left,
               ),
             ),
