@@ -24,7 +24,7 @@ class _AnimeDetailState extends State<AnimeDetail> {
     return Scaffold(
       backgroundColor: Colors.grey.shade900,
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.cyan,
         title: FlatButton(
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           onPressed: () {}, // code for back button
@@ -139,7 +139,7 @@ class _AnimeDetailState extends State<AnimeDetail> {
             SizedBox(
               height: 10,
               child: Divider(
-                color: Colors.orange,
+                color: Colors.cyan,
               ),
             ),
             Container(
