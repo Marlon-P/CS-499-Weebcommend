@@ -1,0 +1,4 @@
+#Mon Oct 12 16:21:13 EDT 2020
+base.0=/Users/shadmanthakur/AndroidStudioProjects/weeb_app/build/app/intermediates/dex/debug/mergeDexDebug/out/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
