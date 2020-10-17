@@ -221,7 +221,12 @@ class _homeweebState extends State<homeweeb> {
 
 
 }
-Container AnimeThumbNails(String imgUrl, String animeTitle) {
+class AnimeThumbNails extends StatelessWidget {
+  @override
+  final String imgUrl;
+  final String animeTitle;
+  AnimeThumbNails(String this.imgUrl, String this.animeTitle);
+  Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(3),
       child: Wrap(
@@ -255,6 +260,7 @@ Container AnimeThumbNails(String imgUrl, String animeTitle) {
       ),
     );
   }
+}
 class RowsContainingAnimeThumbNails extends StatelessWidget {
   @override
   final TopSubtype  topSubtype;
