@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'filters.dart';
+import 'package:jikan_api/jikan_api.dart';
+import 'regularSearchBarScreen.dart';
+
 
 class homeweeb extends StatefulWidget {
   @override
@@ -8,6 +11,21 @@ class homeweeb extends StatefulWidget {
 }
 
 class _homeweebState extends State<homeweeb> {
+
+  Future<List<Anime>> _getAnime(String text) async {
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+
+        return new RegSearchBarScreen(text);
+      })
+    );
+
+    List anime = [];
+
+    return anime;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +35,9 @@ class _homeweebState extends State<homeweeb> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(height: 80, child: SearchBar(onSearch: null, onItemFound: null,
+            Container(height: 80, child: SearchBar(
+              onSearch: _getAnime,
+              onItemFound: null,
             textStyle: TextStyle(color:Colors.white),
             hintText: 'Search for an Anime...',),),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
