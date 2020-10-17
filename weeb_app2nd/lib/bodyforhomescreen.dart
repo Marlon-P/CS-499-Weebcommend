@@ -29,24 +29,29 @@ class _homeweebState extends State<homeweeb> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+       return ListView(
       scrollDirection: Axis.vertical,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(height: 80, child: SearchBar(
-              onSearch: _getAnime,
-              onItemFound: null,
-            textStyle: TextStyle(color:Colors.white),
-            hintText: 'Search for an Anime...',),),
+            Container(
+              height: 80,
+              child: SearchBar(
+                onSearch: null,
+                onItemFound: null,
+                textStyle: TextStyle(color: Colors.white),
+                hintText: 'Search for an Anime...',
+              ),
+            ),//SearchBar
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Container(
                 margin: EdgeInsets.only(left: 5, top: 7),
                 child: Text(
-                  'Top Animes', style: TextStyle(
-                  fontSize: 20,
-                ),
+                  'Top Animes',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
                 ),
               ),
               Container(
@@ -55,54 +60,19 @@ class _homeweebState extends State<homeweeb> {
                   onTap: () {},
                   child: Row(
                     children: [
-                      Text('View More',style: TextStyle(
-                        fontSize: 20,
-                      ),),
+                      Text(
+                        'View More',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
                       Icon(Icons.arrow_forward),
                     ],
                   ),
                 ),
               )
             ]), //Top Animes
-            Container(
-              height: 210,
-              margin: EdgeInsets.only(top: 5),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/1223/96541.jpg?s=faffcb677a5eacd17bf761edd78bfb3f',
-                      'FMA'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/11/33657.jpg?s=5724d8c22ae7a1dad72d8f4229ef803f',
-                      'HxH'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/3/72078.jpg?s=e9537ac90c08758594c787ede117f209',
-                      'Gintama'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/1517/100633.jpg?s=4540a01b5883647ade494cd28392f100',
-                      'AOT'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/4/9391.jpg?s=be052972605dd5422ef2df117766cff0',
-                      'Code Gege'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/1918/96303.jpg?s=b5b51cff7ba201e4f1acf37f4f44e224',
-                      'culturedstuff'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/4/19644.jpg?s=bb1e96eb0a0224a57aa45443eab92575',
-                      'CBB'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/12/76049.jpg?s=40b6c7dbbbb94c44675116d301150078',
-                      'One Punch Man'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/11/39717.jpg?s=5908e8051487fb8468d5fca779f8f00d',
-                      'Sword Art Online'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/5/64449.jpg?s=f1af76501ac3d4238170191d5e0679f2',
-                      'Tokyo Ghoul'),
-                ],
-              ),
-            ),
+            RowsContainingAnimeThumbNails(TopSubtype.bypopularity),
             Container(
               height: 75,
               color: Colors.black54,
@@ -115,7 +85,7 @@ class _homeweebState extends State<homeweeb> {
                   GenreCapsules('Romance', Colors.pink),
                   GenreCapsules('Slice of Life', Colors.deepOrange),
                   GenreCapsules('Sports', Colors.deepPurple),
-                  GenreCapsules('Genre', Colors.white, icon: Icons.add)
+                  GenreCapsules('', Colors.white, icon: Icons.add)
                 ],
               ),
             ), //genres
@@ -123,9 +93,10 @@ class _homeweebState extends State<homeweeb> {
               Container(
                 margin: EdgeInsets.only(left: 5, top: 7),
                 child: Text(
-                  'Top Airing',style: TextStyle(
-                  fontSize: 20,
-                ),
+                  'Top Airing',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
                 ),
               ),
               Container(
@@ -134,61 +105,27 @@ class _homeweebState extends State<homeweeb> {
                   onTap: () {},
                   child: Row(
                     children: [
-                      Text('View More',style: TextStyle(
-                        fontSize: 20,
-                      ),),
+                      Text(
+                        'View More',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
                       Icon(Icons.arrow_forward),
                     ],
                   ),
                 ),
               )
             ]), //topairing
-            Container(
-              height: 210,
-              margin: EdgeInsets.only(top: 5),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/1223/96541.jpg?s=faffcb677a5eacd17bf761edd78bfb3f',
-                      'FMA'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/11/33657.jpg?s=5724d8c22ae7a1dad72d8f4229ef803f',
-                      'HxH'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/3/72078.jpg?s=e9537ac90c08758594c787ede117f209',
-                      'Gintama'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/1517/100633.jpg?s=4540a01b5883647ade494cd28392f100',
-                      'AOT'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/4/9391.jpg?s=be052972605dd5422ef2df117766cff0',
-                      'Code Gege'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/1918/96303.jpg?s=b5b51cff7ba201e4f1acf37f4f44e224',
-                      'culturedstuff'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/4/19644.jpg?s=bb1e96eb0a0224a57aa45443eab92575',
-                      'CBB'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/12/76049.jpg?s=40b6c7dbbbb94c44675116d301150078',
-                      'One Punch Man'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/11/39717.jpg?s=5908e8051487fb8468d5fca779f8f00d',
-                      'Sword Art Online'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/5/64449.jpg?s=f1af76501ac3d4238170191d5e0679f2',
-                      'Tokyo Ghoul'),
-                ],
-              ),
-            ),
+            RowsContainingAnimeThumbNails(TopSubtype.airing),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Container(
                 margin: EdgeInsets.only(left: 5, top: 7),
                 child: Text(
-                  'Top TV',style: TextStyle(
-                  fontSize: 20,
-                ),
+                  'Top TV',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
                 ),
               ),
               Container(
@@ -197,61 +134,27 @@ class _homeweebState extends State<homeweeb> {
                   onTap: () {},
                   child: Row(
                     children: [
-                      Text('View More',style: TextStyle(
-                        fontSize: 20,
-                      ),),
+                      Text(
+                        'View More',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
                       Icon(Icons.arrow_forward),
                     ],
                   ),
                 ),
               )
-            ]),//Top Tv
-            Container(
-              height: 210,
-              margin: EdgeInsets.only(top: 5),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/1223/96541.jpg?s=faffcb677a5eacd17bf761edd78bfb3f',
-                      'FMA'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/11/33657.jpg?s=5724d8c22ae7a1dad72d8f4229ef803f',
-                      'HxH'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/3/72078.jpg?s=e9537ac90c08758594c787ede117f209',
-                      'Gintama'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/1517/100633.jpg?s=4540a01b5883647ade494cd28392f100',
-                      'AOT'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/4/9391.jpg?s=be052972605dd5422ef2df117766cff0',
-                      'Code Gege'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/1918/96303.jpg?s=b5b51cff7ba201e4f1acf37f4f44e224',
-                      'culturedstuff'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/4/19644.jpg?s=bb1e96eb0a0224a57aa45443eab92575',
-                      'CBB'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/12/76049.jpg?s=40b6c7dbbbb94c44675116d301150078',
-                      'One Punch Man'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/11/39717.jpg?s=5908e8051487fb8468d5fca779f8f00d',
-                      'Sword Art Online'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/5/64449.jpg?s=f1af76501ac3d4238170191d5e0679f2',
-                      'Tokyo Ghoul'),
-                ],
-              ),
-            ),
+            ]), //Top Tv
+            RowsContainingAnimeThumbNails(TopSubtype.tv),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Container(
                 margin: EdgeInsets.only(left: 5, top: 7),
                 child: Text(
-                  'Top Movies',style: TextStyle(
-                  fontSize: 20,
-                ),
+                  'Top Movies',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
                 ),
               ),
               Container(
@@ -260,55 +163,19 @@ class _homeweebState extends State<homeweeb> {
                   onTap: () {},
                   child: Row(
                     children: [
-                      Text('View More',style: TextStyle(
-                        fontSize: 20,
-                      ),),
+                      Text(
+                        'View More',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
                       Icon(Icons.arrow_forward),
                     ],
                   ),
                 ),
               )
-            ]),//Top Movies
-            Container(
-              height: 210,
-              margin: EdgeInsets.only(top: 5),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/1223/96541.jpg?s=faffcb677a5eacd17bf761edd78bfb3f',
-                      'FMA'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/11/33657.jpg?s=5724d8c22ae7a1dad72d8f4229ef803f',
-                      'HxH'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/3/72078.jpg?s=e9537ac90c08758594c787ede117f209',
-                      'Gintama'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/1517/100633.jpg?s=4540a01b5883647ade494cd28392f100',
-                      'AOT'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/4/9391.jpg?s=be052972605dd5422ef2df117766cff0',
-                      'Code Gege'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/1918/96303.jpg?s=b5b51cff7ba201e4f1acf37f4f44e224',
-                      'culturedstuff'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/4/19644.jpg?s=bb1e96eb0a0224a57aa45443eab92575',
-                      'CBB'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/12/76049.jpg?s=40b6c7dbbbb94c44675116d301150078',
-                      'One Punch Man'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/11/39717.jpg?s=5908e8051487fb8468d5fca779f8f00d',
-                      'Sword Art Online'),
-                  AnimeThumbNails(
-                      'https://cdn.myanimelist.net/images/anime/5/64449.jpg?s=f1af76501ac3d4238170191d5e0679f2',
-                      'Tokyo Ghoul'),
-                ],
-              ),
-            ),
-
+            ]), //Top Movies
+            RowsContainingAnimeThumbNails(TopSubtype.movie),
           ],
         ), //Top Overall
       ],
@@ -388,6 +255,37 @@ Container AnimeThumbNails(String imgUrl, String animeTitle) {
       ),
     );
   }
-
+class RowsContainingAnimeThumbNails extends StatelessWidget {
+  @override
+  final TopSubtype  topSubtype;
+  Future <List<AnimeThumbNails>>atn;
+  RowsContainingAnimeThumbNails(TopSubtype this.topSubtype){
+    atn = fetchAnimeThumbNails();
+  }
+  Future<List<AnimeThumbNails>> fetchAnimeThumbNails() async {
+    var jikan = Jikan();
+    List<AnimeThumbNails> temp = [];
+    var top = await jikan.getTop(TopType.anime, subtype: topSubtype);
+    for (int i = 0; i <= 9; i++) {
+      print(top[i].imageUrl);
+      temp.add(AnimeThumbNails(top[i].imageUrl, top[i].title));
+    }
+    return temp;
+  }
+  Widget build(BuildContext context) {
+    return FutureBuilder(future: fetchAnimeThumbNails(),
+        builder: (context,snapshot){
+      return Container(
+        height: 210,
+        margin: EdgeInsets.only(top: 5),
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: snapshot.data,
+        ),
+      );
+        }
+    );
+  }
+}
 
 
