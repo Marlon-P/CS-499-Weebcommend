@@ -265,9 +265,7 @@ class RowsContainingAnimeThumbNails extends StatelessWidget {
   @override
   final TopSubtype  topSubtype;
   Future <List<AnimeThumbNails>>atn;
-  RowsContainingAnimeThumbNails(TopSubtype this.topSubtype){
-    atn = fetchAnimeThumbNails();
-  }
+  RowsContainingAnimeThumbNails(TopSubtype this.topSubtype);
   Future<List<AnimeThumbNails>> fetchAnimeThumbNails() async {
     var jikan = Jikan();
     List<AnimeThumbNails> temp = [];
