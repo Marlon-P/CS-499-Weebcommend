@@ -2,18 +2,7 @@ import 'package:flutter/material.dart';
 import 'bodyforhomescreen.dart';
 import 'bodyforhomescreen.dart';
 
-
-
-List<AnimeThumbNails> buildList() {
-  List<AnimeThumbNails> temp = [];
-  for (int i = 0; i < 110; i++) {
-    temp.add(AnimeThumbNails(
-        'https://cdn.myanimelist.net/images/anime/1557/95194.jpg?s=b221303074075efb951d22307beaf6c0',
-        'testtitle',cache: false,height: 290,));
-  }
-  return temp;
-}
-
+//Takes in list of animethumbnails(height:290) and displays it in 2 col view. 
 class DisplayResultGrid extends StatefulWidget {
   @override
   List<AnimeThumbNails> animeList = [];
