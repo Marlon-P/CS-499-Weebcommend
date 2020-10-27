@@ -8,9 +8,7 @@ class DetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: IconButton(icon: Icon(Icons.arrow_back), onPressed: null),
-        ),
+        appBar: AppBar(),
         body: DetailBody(malID),
       ),
     );
