@@ -32,6 +32,22 @@ class homeweeb extends StatefulWidget {
 }
 
 class _homeweebState extends State<homeweeb> {
+
+  Future<List<Anime>> _getAnime(String text) async {
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) {
+
+          return new RegSearchBarScreen(text, 'default');
+        })
+    );
+
+    List anime = [];
+
+    return anime;
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -52,7 +68,7 @@ class _homeweebState extends State<homeweeb> {
                     Container(
                       height: 80,
                       child: SearchBar(
-                        onSearch: null,
+                        onSearch: _getAnime,
                         onItemFound: null,
                         textStyle: TextStyle(color: Colors.white),
                         hintText: 'Search for an Anime...',
@@ -238,14 +254,31 @@ class _homeweebState extends State<homeweeb> {
   }
 
   class AnimeThumbNails extends StatelessWidget {
-    final String imgUrl;
-    final String animeTitle;
-    final int animeID;
-    final double height;
-    final bool cache;
+    String imgUrl;
+    String animeTitle;
+    int animeID;
+    double height;
+    bool cache;
     @override
 
   AnimeThumbNails(String this.imgUrl, String this.animeTitle, int this.animeID, {@required bool this.cache, double this.height = 180});
+
+  AnimeThumbNails.search_rec([Search schAnime, Recommendation recAnime])  {
+    if (schAnime != null) {
+      this.imgUrl = schAnime.imageUrl;
+      this.animeTitle = schAnime.title;
+      this.animeID = schAnime.malId;
+      this.height = 180.0;
+      this.cache = false;
+    } else if (recAnime != null) {
+      this.imgUrl = recAnime.imageUrl;
+      this.animeTitle = recAnime.title;
+      this.animeID = recAnime.malId;
+      this.height = 180.0;
+      this.cache = false;
+    }
+  }
+
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(3),
