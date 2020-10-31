@@ -1,27 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
+import 'package:weeb_app/gridview.dart';
 import 'filters.dart';
 import 'package:jikan_api/jikan_api.dart';
 import 'regularSearchBarScreen.dart';
 import 'detailpage.dart';
 import 'package:extended_image/extended_image.dart';
+import 'viewmoretop.dart';
 import 'package:async/async.dart';
 
-fetchDataforHomescreen()async{
-
+fetchDataforHomescreen() async {
   var jikan = Jikan();
-  Map<String,List<Widget>> topCategories = {'airing':[],'movies':[],'popularity':[],'tv':[]};
+  Map<String, List<Widget>> topCategories = {
+    'Airing': [],
+    'Movies': [],
+    'Animes': [],
+    'TV': []
+  };
   var toppop = await jikan.getTop(TopType.anime, subtype: TopSubtype.bypopularity);
-  print(toppop);
   var topair = await jikan.getTop(TopType.anime, subtype: TopSubtype.airing);
-  var topmovies = await jikan.getTop(TopType.anime,subtype: TopSubtype.movie);
-  var toptv = await jikan.getTop(TopType.anime,subtype: TopSubtype.tv);
+  var topmovies = await jikan.getTop(TopType.anime, subtype: TopSubtype.movie);
+  var toptv = await jikan.getTop(TopType.anime, subtype: TopSubtype.tv);
 
-  for (int i = 0; i <= 9; i++) {
-    topCategories['popularity'].add(AnimeThumbNails(toppop[i].imageUrl, toppop[i].title, toppop[i].malId,cache: true,));
-    topCategories['airing'].add(AnimeThumbNails(topair[i].imageUrl, topair[i].title,topair[i].malId,cache: true,));
-    topCategories['movies'].add(AnimeThumbNails(topmovies[i].imageUrl, topmovies[i].title,topmovies[i].malId,cache: true,));
-    topCategories['tv'].add(AnimeThumbNails(toptv[i].imageUrl, toptv[i].title,toptv[i].malId,cache: true,));
+
+  for (int i = 0; i <= 49; i++) {
+    topCategories['Animes'].add(AnimeThumbNails(
+      toppop[i].imageUrl,
+      toppop[i].title,
+      toppop[i].malId,
+      cache: true,
+    ));
+    topCategories['Airing'].add(AnimeThumbNails(
+      topair[i].imageUrl,
+      topair[i].title,
+      topair[i].malId,
+      cache: true,
+    ));
+    topCategories['Movies'].add(AnimeThumbNails(
+      topmovies[i].imageUrl,
+      topmovies[i].title,
+      topmovies[i].malId,
+      cache: true,
+    ));
+    topCategories['TV'].add(AnimeThumbNails(
+      toptv[i].imageUrl,
+      toptv[i].title,
+      toptv[i].malId,
+      cache: true,
+    ));
   }
   return topCategories;
 }
@@ -32,16 +58,10 @@ class homeweeb extends StatefulWidget {
 }
 
 class _homeweebState extends State<homeweeb> {
-
   Future<List<Anime>> _getAnime(String text) async {
-
-    Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) {
-
-          return new RegSearchBarScreen(text, 'default');
-        })
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return new RegSearchBarScreen(text, 'default');
+    }));
 
     List anime = [];
 
@@ -53,8 +73,8 @@ class _homeweebState extends State<homeweeb> {
     return FutureBuilder(
       future: fetchDataforHomescreen(),
       // ignore: missing_return
-      builder: (context, snapshot){
-        switch(snapshot.connectionState){
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.active:
           case ConnectionState.waiting:
@@ -74,36 +94,13 @@ class _homeweebState extends State<homeweeb> {
                         hintText: 'Search for an Anime...',
                       ),
                     ), //SearchBar
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 5, top: 7),
-                        child: Text(
-                          'Top Animes',
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 7),
-                        child: InkWell(
-                          onTap: () {},
-                          child: Row(
-                            children: [
-                              Text(
-                                'View More',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Icon(Icons.arrow_forward),
-                            ],
-                          ),
-                        ),
-                      )
-                    ]), //Top Animes
-                    RowsContainingAnimeThumbNails(snapshot.data['popularity']),
-                    Container(
+                    TopViewMore(
+                        toptype: 'Animes',
+                        context: context,
+                        snapshot: snapshot), //Top Animes
+                    RowsContainingAnimeThumbNails(
+                        snapshot.data['Animes'].sublist(0, 10)),
+                    Container(//Genres
                       height: 75,
                       color: Colors.black54,
                       child: ListView(
@@ -119,93 +116,25 @@ class _homeweebState extends State<homeweeb> {
                         ],
                       ),
                     ), //genres
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 5, top: 7),
-                        child: Text(
-                          'Top Airing',
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 7),
-                        child: InkWell(
-                          onTap: () {},
-                          child: Row(
-                            children: [
-                              Text(
-                                'View More',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Icon(Icons.arrow_forward),
-                            ],
-                          ),
-                        ),
-                      )
-                    ]), //topairing
-                    RowsContainingAnimeThumbNails(snapshot.data['airing']),
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 5, top: 7),
-                        child: Text(
-                          'Top TV',
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 7),
-                        child: InkWell(
-                          onTap: () {},
-                          child: Row(
-                            children: [
-                              Text(
-                                'View More',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Icon(Icons.arrow_forward),
-                            ],
-                          ),
-                        ),
-                      )
-                    ]), //Top Tv
-                    RowsContainingAnimeThumbNails(snapshot.data['tv']),
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 5, top: 7),
-                        child: Text(
-                          'Top Movies',
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 7),
-                        child: InkWell(
-                          onTap: () {},
-                          child: Row(
-                            children: [
-                              Text(
-                                'View More',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Icon(Icons.arrow_forward),
-                            ],
-                          ),
-                        ),
-                      )
-                    ]), //Top Movies
-                    RowsContainingAnimeThumbNails(snapshot.data['movies']),
+                    TopViewMore(
+                        toptype: 'Airing',
+                        context: context,
+                        snapshot: snapshot),
+                    RowsContainingAnimeThumbNails(
+                        snapshot.data['Airing'].sublist(0, 10)),
+                    TopViewMore(
+                        toptype: 'TV',
+                        context: context,
+                        snapshot: snapshot),
+                    RowsContainingAnimeThumbNails(
+                        snapshot.data['TV'].sublist(0, 10)),
+                    TopViewMore(
+                        toptype: 'Movies',
+                        context: context,
+                        snapshot:
+                            snapshot),
+                    RowsContainingAnimeThumbNails(
+                        snapshot.data['Movies'].sublist(0, 10)),
                   ],
                 ), //Top Overall
               ],
@@ -214,6 +143,7 @@ class _homeweebState extends State<homeweeb> {
       },
     );
   }
+
   Container GenreCapsules(String genre, var color, {var icon}) {
     return Container(
       width: 200,
@@ -227,7 +157,11 @@ class _homeweebState extends State<homeweeb> {
         ),
         child: InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => (filters(genre.toLowerCase()))),);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => (filters(genre.toLowerCase()))),
+            );
           },
           borderRadius: BorderRadius.circular(30),
           child: Center(
@@ -236,14 +170,14 @@ class _homeweebState extends State<homeweeb> {
               children: [
                 icon == null
                     ? Text(
-                  genre,
-                  style: TextStyle(fontSize: 25),
-                )
+                        genre,
+                        style: TextStyle(fontSize: 25),
+                      )
                     : Icon(
-                  icon,
-                  size: 50,
-                  color: Colors.black,
-                ),
+                        icon,
+                        size: 50,
+                        color: Colors.black,
+                      ),
               ],
             ),
           ),
@@ -251,30 +185,37 @@ class _homeweebState extends State<homeweeb> {
       ),
     );
   }
+}
+
+class AnimeThumbNails extends StatelessWidget {
+  String imgUrl;
+  String animeTitle;
+  int animeID;
+  double height;
+  bool cache;
+  var additionalAnimeInfo;
+  fetchMore()async{
+    var jikan = Jikan();
+    var moreinfo = jikan.getAnimeInfo(animeID);
+    return moreinfo;
   }
 
-  class AnimeThumbNails extends StatelessWidget {
-    String imgUrl;
-    String animeTitle;
-    int animeID;
-    double height;
-    bool cache;
-    @override
+  @override
+  AnimeThumbNails(String this.imgUrl, String this.animeTitle, int this.animeID,
+      {@required bool this.cache, double this.height = 180});
 
-  AnimeThumbNails(String this.imgUrl, String this.animeTitle, int this.animeID, {@required bool this.cache, double this.height = 180});
-
-  AnimeThumbNails.search_rec([Search schAnime, Recommendation recAnime])  {
+  AnimeThumbNails.search_rec([Search schAnime, Recommendation recAnime]) {
     if (schAnime != null) {
       this.imgUrl = schAnime.imageUrl;
       this.animeTitle = schAnime.title;
       this.animeID = schAnime.malId;
-      this.height = 180.0;
+      this.height = 250.0;
       this.cache = false;
     } else if (recAnime != null) {
       this.imgUrl = recAnime.imageUrl;
       this.animeTitle = recAnime.title;
       this.animeID = recAnime.malId;
-      this.height = 180.0;
+      this.height = 250.0;
       this.cache = false;
     }
   }
@@ -289,7 +230,11 @@ class _homeweebState extends State<homeweeb> {
               borderRadius: BorderRadius.circular(7),
               onTap: () {
                 //print('tapped');
-                Navigator.push(context, MaterialPageRoute(builder: (context) => (DetailPage(animeID))),);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => (DetailPage(animeID))),
+                );
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(7),
@@ -316,6 +261,7 @@ class _homeweebState extends State<homeweeb> {
     );
   }
 }
+
 class RowsContainingAnimeThumbNails extends StatelessWidget {
   List animes = [];
 
@@ -334,4 +280,40 @@ class RowsContainingAnimeThumbNails extends StatelessWidget {
   }
 }
 
-
+Row TopViewMore(
+    {@required String toptype, AsyncSnapshot snapshot, BuildContext context}) {
+  return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+    Container(
+      margin: EdgeInsets.only(left: 5, top: 7),
+      child: Text(
+        'Top $toptype',
+        style: TextStyle(
+          fontSize: 20,
+        ),
+      ),
+    ),
+    Container(
+      margin: EdgeInsets.only(top: 7),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      (ViewMore(toptype,snapshot.data[toptype]))));
+        },
+        child: Row(
+          children: [
+            Text(
+              'View More',
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+            Icon(Icons.arrow_forward),
+          ],
+        ),
+      ),
+    )
+  ]);
+}
