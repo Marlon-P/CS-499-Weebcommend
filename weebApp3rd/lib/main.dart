@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:weeb_app/animes.dart';
-import 'package:weeb_app/homescreen.dart';
-import 'advanceSearch.dart';
-import 'splashscreen.dart';
+import 'home.dart';
+
 
 void main() {
   runApp(MyApp());
-  // List<Anime> myanimes = [];
-  // Future<List<dynamic>> animes =  advanceSearch(myanimes, query: 'fullmetal');
 }
 
 class MyApp extends StatelessWidget {
@@ -17,7 +13,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Weebcommend',
       theme: ThemeData.dark(),
-      home: home(),
+      home:homeweeb(),
     );
   }
 }
+

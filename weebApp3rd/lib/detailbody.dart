@@ -37,10 +37,10 @@ class _DetailBodyState extends State<DetailBody> {
     List<dynamic> tempList = returnList;
     Future returnData = getData();
     returnData.then((value) => tempList = value);
-    returnData.then((value) => setState((){
-      returnList = tempList;
-    }));
-
+    returnData.then((value) =>
+        setState(() {
+          returnList = tempList;
+        }));
   }
 
   Widget renderPage() {
@@ -211,7 +211,7 @@ class _DetailBodyState extends State<DetailBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: renderPage()
+        body: renderPage()
     );
   }
 }

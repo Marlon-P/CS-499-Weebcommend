@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import 'Dropdown.dart';
-import 'bodyforhomescreen.dart';
+import 'home.dart';
 import 'gridview.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 
 class filters extends StatefulWidget {
@@ -61,7 +62,7 @@ class _filtersState extends State<filters> {
     print (pageList.length);
     Response response = await get(
         isSearching + "page=" + (pageList.length + 1).toString());
-      //isSearching + "page=" + pageNum.toString());
+    //isSearching + "page=" + pageNum.toString());
     Map data = jsonDecode(response.body);
     List<AnimeThumbNails> temp = [];
     List<dynamic> yes = data['results'];
@@ -128,49 +129,49 @@ class _filtersState extends State<filters> {
 ////////////////////////////////////////////FOR PAGES///////////////////////////////////////////////////////////////////
   String createQueryString(){
     String queryString = 'https://api.jikan.moe/v3/search/anime?';
-      if (genreFilterList.isNotEmpty) {
-        queryString = queryString + 'genre=';
-        genreFilterList.forEach((key, value) {
-          queryString = queryString + value + ',';
-        });
-        queryString = queryString + '&';
-      }
-      if (typeFilterList.isNotEmpty) {
-        queryString = queryString + 'type=';
-        typeFilterList.forEach((key, value) {
-          queryString = queryString + value + '&';
-        });
-      }
-      if (seasonFilterList.isNotEmpty && yearFilterList.isEmpty) {
-        final now = new DateTime.now();
-        String current = now.year.toString();
-        List<String> splitter;
-        seasonFilterList.forEach((key, value) {
-          splitter = value.split('|');
-        });
-        queryString =
-            queryString + 'start_date=' + current + '-' + splitter[0] +
-                '&end_date=' + current + '-' + splitter[1] + '&';
-      }
-      if (seasonFilterList.isEmpty && yearFilterList.isNotEmpty) {
-        queryString = queryString + 'start_date=' + yearFilterList['year'] +
-            '-01-01&end_date=' + yearFilterList['year'] + '-12-31&';
-      }
-      if (seasonFilterList.isNotEmpty && yearFilterList.isNotEmpty) {
-        List<String> splitter;
-        seasonFilterList.forEach((key, value) {
-          splitter = value.split('|');
-        });
-        queryString =
-            queryString + 'start_date=' + yearFilterList['year'] + '-' +
-                splitter[0] + '&end_date=' + yearFilterList['year'] + '-' +
-                splitter[1] + '&';
-      }
-      if (genreFilterList.isEmpty && seasonFilterList.isEmpty &&
-          yearFilterList.isEmpty && typeFilterList.isEmpty) {
-        queryString =
-        'https://api.jikan.moe/v3/search/anime?status=airing&order_by=members&';
-      }
+    if (genreFilterList.isNotEmpty) {
+      queryString = queryString + 'genre=';
+      genreFilterList.forEach((key, value) {
+        queryString = queryString + value + ',';
+      });
+      queryString = queryString + '&';
+    }
+    if (typeFilterList.isNotEmpty) {
+      queryString = queryString + 'type=';
+      typeFilterList.forEach((key, value) {
+        queryString = queryString + value + '&';
+      });
+    }
+    if (seasonFilterList.isNotEmpty && yearFilterList.isEmpty) {
+      final now = new DateTime.now();
+      String current = now.year.toString();
+      List<String> splitter;
+      seasonFilterList.forEach((key, value) {
+        splitter = value.split('|');
+      });
+      queryString =
+          queryString + 'start_date=' + current + '-' + splitter[0] +
+              '&end_date=' + current + '-' + splitter[1] + '&';
+    }
+    if (seasonFilterList.isEmpty && yearFilterList.isNotEmpty) {
+      queryString = queryString + 'start_date=' + yearFilterList['year'] +
+          '-01-01&end_date=' + yearFilterList['year'] + '-12-31&';
+    }
+    if (seasonFilterList.isNotEmpty && yearFilterList.isNotEmpty) {
+      List<String> splitter;
+      seasonFilterList.forEach((key, value) {
+        splitter = value.split('|');
+      });
+      queryString =
+          queryString + 'start_date=' + yearFilterList['year'] + '-' +
+              splitter[0] + '&end_date=' + yearFilterList['year'] + '-' +
+              splitter[1] + '&';
+    }
+    if (genreFilterList.isEmpty && seasonFilterList.isEmpty &&
+        yearFilterList.isEmpty && typeFilterList.isEmpty) {
+      queryString =
+      'https://api.jikan.moe/v3/search/anime?status=airing&order_by=members&';
+    }
 
     print(queryString);
     return queryString;
@@ -323,6 +324,46 @@ class _filtersState extends State<filters> {
 
   }
 
+  Widget renderBox(){
+    if(pageList.isNotEmpty)
+    {
+      return Container(
+        //child: DisplayResultGrid(pageList),
+
+          child: Column(children:<Widget>[
+            //SizedBox( height: 534, child: PageView(controller: _controller, scrollDirection: Axis.horizontal, pageSnapping: true, children:
+            //renderPageView())   ),
+
+            Expanded(child: PageView(controller: _controller, scrollDirection: Axis.horizontal, pageSnapping: true, children:
+            renderPageView())),
+
+            SizedBox(height: 25, width: 500, child: ListView(scrollDirection: Axis.horizontal, children: renderPageList())),
+
+          ],
+          )
+      );
+    }
+    else{
+      return Center(
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SpinKitFadingCube(
+                color: Colors.white,
+                size: 50.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text('loading'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
   List<Widget> renderFilters(){
     List<Widget> tempList = [];
     if(genreFilterList.isNotEmpty){tempList = genreFilterList.entries.map((e) => FlatButton(onPressed: (){makeGenreQuery(e.key, 'genre', false);}, child: Text(e.key))).toList();}
@@ -347,14 +388,20 @@ class _filtersState extends State<filters> {
   @override
   Widget build(BuildContext context) {
     return
-      Scaffold(appBar: PreferredSize( preferredSize: Size.fromHeight(100.0), child: AppBar(
+      Scaffold(appBar:PreferredSize( preferredSize: Size.fromHeight(100.0), child:
+      AppBar( automaticallyImplyLeading: false,
         backgroundColor: Colors.blue[233],
-        title: Row(children: renderDropDowns(),)
+        title: Row(children: <Widget>[Expanded(child: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back),)), Row(children: renderDropDowns(),)])
         ,
-        //
-        bottom: PreferredSize(child: Expanded(child: Row(children:<Widget> [Flexible (child: ListView(scrollDirection: Axis.horizontal, children: renderFilters())), FlatButton(onPressed: (stopPageFetch) ? null : (){go();}, child: Text('GO'), color: Colors.green,)]))),
-      )),
-        body: Container(
+
+        bottom:
+        PreferredSize(child: Expanded(child: Row(children:<Widget> [Flexible (child: ListView(scrollDirection: Axis.horizontal, children: renderFilters())), FlatButton(onPressed: (stopPageFetch) ? null : (){go();}, child: Text('GO'), color: Colors.green,)]))),
+      )
+      )
+          ,
+          body: renderBox()
+        /*
+        Container(
           //child: DisplayResultGrid(pageList),
 
             child: Column(children:<Widget>[
@@ -368,27 +415,9 @@ class _filtersState extends State<filters> {
 
             ],
             )
+        ),
 
-          /*
-            child:
-
-            Column( children:<Widget>[
-              PreferredSize( child: Expanded(child: Scaffold(
-                  body: Container(
-                      child:
-                      PageView(controller: _controller, scrollDirection: Axis.horizontal, pageSnapping: true, children:
-                      renderPageView()
-                      )
-                  ))
-              )),
-
-              SizedBox(height: 25, width: 500, child: ListView(scrollDirection: Axis.horizontal, children: renderPageList())),
-
-            ])
-
-
-     */   ),
-
+        */
       );
   }
 }

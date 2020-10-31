@@ -71,6 +71,7 @@ Future<List<Anime>> advanceSearch(List<Anime> animeList, {String query, int page
   url += 'order_by=$order_by&';
  } else {
   print('insufficient parameters');
+  return null;
  }
  Response response = await get(url);
  Map data = jsonDecode(response.body);
@@ -82,5 +83,3 @@ Future<List<Anime>> advanceSearch(List<Anime> animeList, {String query, int page
  // print(animeList);
  return animes;
 }
-
-//https://api.jikan.moe/v3/search/anime?genre=12&order_by=score

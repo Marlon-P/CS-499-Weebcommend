@@ -12,7 +12,7 @@ class splashScreen extends StatelessWidget {
               children: [
                 Image.asset(
                   'images/kazuma.png',
-                  fit: BoxFit.fitWidth,
+                  fit: BoxFit.fitWidth
                 ),
                 Text(
                   'Weebcommend',
