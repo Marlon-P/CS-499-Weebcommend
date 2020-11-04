@@ -7,6 +7,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Nexus_6_API_28" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -55,25 +56,33 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1877" height="285" key="GridCell.Tab.0.bottom" timestamp="1604114951812">
+    <state width="1877" height="285" key="GridCell.Tab.0.bottom" timestamp="1604427383684">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="285" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1604114951812" />
-    <state width="1877" height="285" key="GridCell.Tab.0.center" timestamp="1604114951812">
+    <state width="1877" height="285" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1604427383684" />
+    <state width="1877" height="285" key="GridCell.Tab.0.center" timestamp="1604427383684">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="285" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1604114951812" />
-    <state width="1877" height="285" key="GridCell.Tab.0.left" timestamp="1604114951811">
+    <state width="1877" height="285" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1604427383684" />
+    <state width="1877" height="285" key="GridCell.Tab.0.left" timestamp="1604427383684">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="285" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1604114951811" />
-    <state width="1877" height="285" key="GridCell.Tab.0.right" timestamp="1604114951812">
+    <state width="1877" height="285" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1604427383684" />
+    <state width="1877" height="285" key="GridCell.Tab.0.right" timestamp="1604427383684">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="285" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1604114951812" />
-    <state x="620" y="349" key="com.intellij.ide.util.TipDialog" timestamp="1604108349501">
+    <state width="1877" height="285" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1604427383684" />
+    <state x="461" y="167" key="SettingsEditor" timestamp="1604425880636">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state x="620" y="349" key="com.intellij.ide.util.TipDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1604108349501" />
+    <state x="461" y="167" key="SettingsEditor/0.0.1920.1050@0.0.1920.1050" timestamp="1604425880636" />
+    <state x="92" y="92" width="1736" height="866" key="com.android.tools.idea.avdmanager.AvdListDialog" timestamp="1604425888465">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="92" y="92" width="1736" height="866" key="com.android.tools.idea.avdmanager.AvdListDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1604425888465" />
+    <state x="620" y="349" key="com.intellij.ide.util.TipDialog" timestamp="1604425808217">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="620" y="349" key="com.intellij.ide.util.TipDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1604425808217" />
   </component>
 </project>
