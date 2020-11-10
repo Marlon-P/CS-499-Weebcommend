@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -31,12 +33,12 @@ class _filtersState extends State<filters> {
   Map<String,String> seasonFilterList = Map<String,String>();
   Map<String,String> yearFilterList = Map<String,String>();
   Map<String,String> typeFilterList = Map<String,String>();
-  List<List<String>> dropDownList = [['genre','action','adventure','cars','comedy','dementia','demons','mystery','drama','ecchi','fantasy','game','hentai','historical','horror','kids','magic','martial arts','mecha','music','parody','samurai','romance','school','sci fi','shoujo','shoujo ai','shounen','shounen ai','space','sports','super power','vampire','yaoi','yuri','harem','slice of life','supernatural','military','police','psychological','thriller','seinen','josei'],['season','winter','spring','fall','summer'],['type','tv','ova','movie','special','ona','music'],['year','2022','2021','2020','2019','2018','2017','2016','2015','2014','2013','2012','2011','2010','2009','2008','2007','2006','2005','2004','2003','2002','2001','2000']];
+  List<List<String>> dropDownList = [['genre','action','adventure','cars','comedy','dementia','demons','drama','ecchi','fantasy','game','harem','hentai','historical','horror','josei','kids','magic','martial arts','mecha','military','music','mystery','parody','police','psychological','romance','samurai','school','sci fi','seinen','shoujo ai','shoujo','shounen ai','shounen','slice of life','space','sports','super power','supernatural','thriller','vampire','yaoi','yuri'],['season','winter','spring','fall','summer'],['type','tv','ova','movie','special','ona','music'],['year','2022','2021','2020','2019','2018','2017','2016','2015','2014','2013','2012','2011','2010','2009','2008','2007','2006','2005','2004','2003','2002','2001','2000']];
 
 
-  //List<AnimeThumbNails> pageList = [];
   List<List<AnimeThumbNails>> pageList = [];
-
+  bool isConnected = true;
+  bool noResults = false;
   bool stopPageFetch = false;
   PageController _controller = PageController(initialPage: 0);
 
@@ -60,14 +62,28 @@ class _filtersState extends State<filters> {
 ////////////////////////////////////////////////////FOR PAGES///////////////////////////////////////////////////////////
   Future<List<AnimeThumbNails>> getNextPage(String isSearching, int pageNum) async{
     print (pageList.length);
-    Response response = await get(
+    Map data;
+    try {Response response = await get(
         isSearching + "page=" + (pageList.length + 1).toString());
-    //isSearching + "page=" + pageNum.toString());
-    Map data = jsonDecode(response.body);
+    data = jsonDecode(response.body);
+    if(!isConnected)
+      {
+        setState(() {isConnected = true;});
+      }
+    }
+    catch(e){
+      print(e);
+      if(isConnected)
+      {setState(() {isConnected = false;});}
+      return null;
+    }
     List<AnimeThumbNails> temp = [];
     List<dynamic> yes = data['results'];
-    if(yes != null)
-    {yes.forEach((element) => temp.add(AnimeThumbNails(element['image_url'], element['title'],element['mal_id'], cache: true, height: 250)));}
+    if(yes.isNotEmpty)
+    {yes.forEach((element) => temp.add(AnimeThumbNails(element['image_url'], element['title'],element['mal_id'], cache: true, height: 250)));
+    if(noResults) {setState(() {noResults = false;});}
+    }
+    else {if(!noResults){setState(() {noResults = true;});}}
     return temp;
   }
 
@@ -76,8 +92,9 @@ class _filtersState extends State<filters> {
     {Future totalPages;
     Future.delayed(const Duration(seconds: 1),(){
       totalPages = getNextPage(isSearching, pageNum);
-      if(!stopPageFetch)
-      {totalPages.then((value) => renderPagesEnd(value, isSearching, pageNum));}
+      if (!stopPageFetch)
+      {totalPages.then((value) => (value != null) ? renderPagesEnd(value, isSearching, pageNum) : print("No internet or No results"));}
+
     });}}
 
   void renderPagesEnd(List<AnimeThumbNails> isNotFinalPage, String isSearching, int pageNum)
@@ -343,6 +360,14 @@ class _filtersState extends State<filters> {
           )
       );
     }
+    else if(!isConnected && pageList.isEmpty)
+      {
+        return Center(child: Column(children: <Widget>[Icon(Icons.signal_wifi_off, size: 100,), Text("NO WIFI",style: TextStyle(fontSize: 100),)]));
+      }
+    else if(noResults)
+      {
+        return Center(child: Column(children: <Widget>[Icon(Icons.block, size: 100,), Text("NO RESULTS",style: TextStyle(fontSize: 100),)]));
+      }
     else{
       return Center(
         child: Container(
@@ -366,10 +391,10 @@ class _filtersState extends State<filters> {
 
   List<Widget> renderFilters(){
     List<Widget> tempList = [];
-    if(genreFilterList.isNotEmpty){tempList = genreFilterList.entries.map((e) => FlatButton(onPressed: (){makeGenreQuery(e.key, 'genre', false);}, child: Text(e.key))).toList();}
-    if(typeFilterList.isNotEmpty){tempList = tempList + typeFilterList.entries.map((e) => FlatButton(onPressed: (){makeGenreQuery(e.key, 'type', false);}, child: Text(e.value))).toList();}
-    if(seasonFilterList.isNotEmpty){tempList = tempList + seasonFilterList.entries.map((e) => FlatButton(onPressed: (){makeGenreQuery(e.key, 'season', false);}, child: Text(e.key),)).toList();}
-    if(yearFilterList.isNotEmpty) {tempList = tempList + yearFilterList.entries.map((e) => FlatButton(onPressed: (){makeGenreQuery(e.key, 'year', false);}, child: Text(e.value))).toList();}
+    if(genreFilterList.isNotEmpty){tempList = genreFilterList.entries.map((e) => FlatButton(onPressed: (){makeGenreQuery(e.key, 'genre', false);}, child: Row(children: <Widget>[Text(e.key), Icon(Icons.clear, color: Colors.white, size: 20)],), shape: RoundedRectangleBorder(side: BorderSide(color: Colors.blue, width: 1, style: BorderStyle.solid), borderRadius: BorderRadius.circular(20)))).toList();}
+    if(typeFilterList.isNotEmpty){tempList = tempList + typeFilterList.entries.map((e) => FlatButton(onPressed: (){makeGenreQuery(e.key, 'type', false);}, child: Row(children: <Widget> [Text(e.value), Icon(Icons.clear, color: Colors.white, size: 20)],), shape: RoundedRectangleBorder(side: BorderSide(color: Colors.red, width: 1, style: BorderStyle.solid), borderRadius: BorderRadius.circular(20)))).toList();}
+    if(seasonFilterList.isNotEmpty){tempList = tempList + seasonFilterList.entries.map((e) => FlatButton(onPressed: (){makeGenreQuery(e.key, 'season', false);}, child: Row(children: <Widget>[Text(e.key), Icon(Icons.clear, color: Colors.white, size: 20)],),shape: RoundedRectangleBorder(side: BorderSide(color: Colors.orange, width: 1, style: BorderStyle.solid), borderRadius: BorderRadius.circular(20)))).toList();}
+    if(yearFilterList.isNotEmpty) {tempList = tempList + yearFilterList.entries.map((e) => FlatButton(onPressed: (){makeGenreQuery(e.key, 'year', false);}, child: Row(children: <Widget>[Text(e.value), Icon(Icons.clear, color: Colors.white, size: 20)]),shape: RoundedRectangleBorder(side: BorderSide(color: Colors.green, width: 1, style: BorderStyle.solid), borderRadius: BorderRadius.circular(20)))).toList();}
     return tempList;
   }
 

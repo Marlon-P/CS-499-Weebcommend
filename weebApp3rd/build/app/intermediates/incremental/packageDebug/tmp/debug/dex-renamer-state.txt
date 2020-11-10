@@ -1,4 +1,4 @@
-#Tue Nov 03 13:12:47 EST 2020
-base.0=C\:\\Users\\lemue\\AndroidStudioProjects\\weebApp3rd\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes.dex
+#Mon Nov 09 01:08:21 EST 2020
+base.0=C\:\\Users\\essdessder\\Desktop\\appf\\CS-499-Weebcommend\\weebApp3rd\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes.dex
 path.0=classes.dex
 renamed.0=classes.dex
