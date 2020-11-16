@@ -8,48 +8,6 @@ import 'detailpage.dart';
 import 'package:extended_image/extended_image.dart';
 import 'viewmoretop.dart';
 
-fetchDataforHomescreen() async {
-  var jikan = Jikan();
-  Map<String, List<Widget>> topCategories = {
-    'Airing': [],
-    'Movies': [],
-    'Animes': [],
-    'TV': []
-  };
-  var toppop = await jikan.getTop(TopType.anime, subtype: TopSubtype.bypopularity);
-  var topair = await jikan.getTop(TopType.anime, subtype: TopSubtype.airing);
-  var topmovies = await jikan.getTop(TopType.anime, subtype: TopSubtype.movie);
-  var toptv = await jikan.getTop(TopType.anime, subtype: TopSubtype.tv);
-
-
-  for (int i = 0; i <= 49; i++) {
-    topCategories['Animes'].add(AnimeThumbNails(
-      toppop[i].imageUrl,
-      toppop[i].title,
-      toppop[i].malId,
-      cache: true,
-    ));
-    topCategories['Airing'].add(AnimeThumbNails(
-      topair[i].imageUrl,
-      topair[i].title,
-      topair[i].malId,
-      cache: true,
-    ));
-    topCategories['Movies'].add(AnimeThumbNails(
-      topmovies[i].imageUrl,
-      topmovies[i].title,
-      topmovies[i].malId,
-      cache: true,
-    ));
-    topCategories['TV'].add(AnimeThumbNails(
-      toptv[i].imageUrl,
-      toptv[i].title,
-      toptv[i].malId,
-      cache: true,
-    ));
-  }
-  return topCategories;
-}
 
 class homeweeb extends StatefulWidget {
   @override
@@ -57,6 +15,66 @@ class homeweeb extends StatefulWidget {
 }
 
 class _homeweebState extends State<homeweeb> {
+  bool isConnected = true;
+
+  fetchDataforHomescreen() async {
+    var jikan = Jikan();
+    Map<String, List<Widget>> topCategories = {
+      'Airing': [],
+      'Movies': [],
+      'Animes': [],
+      'TV': []
+    };
+
+    try {
+      var toppop = await jikan.getTop(
+          TopType.anime, subtype: TopSubtype.bypopularity);
+      var topair = await jikan.getTop(TopType.anime, subtype: TopSubtype.airing);
+      var topmovies = await jikan.getTop(
+          TopType.anime, subtype: TopSubtype.movie);
+      var toptv = await jikan.getTop(TopType.anime, subtype: TopSubtype.tv);
+
+      for (int i = 0; i <= 49; i++) {
+        topCategories['Animes'].add(AnimeThumbNails(
+          toppop[i].imageUrl,
+          toppop[i].title,
+          toppop[i].malId,
+          cache: true,
+        ));
+        topCategories['Airing'].add(AnimeThumbNails(
+          topair[i].imageUrl,
+          topair[i].title,
+          topair[i].malId,
+          cache: true,
+        ));
+        topCategories['Movies'].add(AnimeThumbNails(
+          topmovies[i].imageUrl,
+          topmovies[i].title,
+          topmovies[i].malId,
+          cache: true,
+        ));
+        topCategories['TV'].add(AnimeThumbNails(
+          toptv[i].imageUrl,
+          toptv[i].title,
+          toptv[i].malId,
+          cache: true,
+        ));
+      }
+      if(!isConnected)
+      {
+        setState(() {isConnected = true;});
+      }
+      return topCategories;
+    }
+    catch(e){
+      print(e);
+      if(isConnected)
+      {setState(() {isConnected = false;});}
+      return topCategories;
+    }
+  }
+
+
   Future<List<Anime>> _getAnime(String text) async {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new RegSearchBarScreen(text, 'default');
@@ -79,8 +97,8 @@ class _homeweebState extends State<homeweeb> {
             return splashScreen();
           case ConnectionState.waiting:
             return splashScreen();
-          case ConnectionState.done:
-            return Scaffold(
+          case ConnectionState.done: return (isConnected) ?
+            Scaffold(
               floatingActionButton: FloatingActionButton.extended(
                 onPressed:() {
                   showDialog(
@@ -202,7 +220,8 @@ class _homeweebState extends State<homeweeb> {
                   ), //Top Overall
                 ],
               ),
-            );
+            )
+          : Center(child: Column(children: <Widget>[Icon(Icons.signal_wifi_off, size: 100,), Text("NO WIFI OR API ERROR",style: TextStyle(fontSize: 50),), FlatButton(onPressed: (){fetchDataforHomescreen();},child: Text("Restart",style: TextStyle(fontSize: 30, color: Colors.green)))]));
         }
       },
     );

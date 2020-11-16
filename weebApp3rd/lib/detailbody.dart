@@ -15,20 +15,41 @@ class DetailBody extends StatefulWidget {
 
 class _DetailBodyState extends State<DetailBody> {
   List<dynamic> returnList = [];
+  bool isConnected = true;
+  bool noResults = false;
 
   Future<List<dynamic>> getData() async {
-    Response response = await get(
-        "https://api.jikan.moe/v3/anime/" + widget.animeID.toString());
-    Map data = jsonDecode(response.body);
-    List<dynamic> returnList = [];
-    returnList.add(data['image_url']);
-    returnList.add(data['title']);
-    returnList.add(data['type']);
-    returnList.add(data['episodes']);
-    returnList.add(data['score']);
-    returnList.add(data['rating']);
-    returnList.add(data['synopsis']);
-    return returnList;
+    try {
+      if(!isConnected)
+      {
+        setState(() {isConnected = true;});
+      }
+      Response response = await get(
+          "https://api.jikan.moe/v3/anime/" + widget.animeID.toString());
+      Map data = jsonDecode(response.body);
+      List<dynamic> returnList = [];
+      if(data != null) {
+        returnList.add(data['image_url']);
+        returnList.add(data['title']);
+        returnList.add(data['type']);
+        returnList.add(data['episodes']);
+        returnList.add(data['score']);
+        returnList.add(data['rating']);
+        returnList.add(data['synopsis']);
+        if(noResults) {setState(() {noResults = false;});}
+        return returnList;
+      }
+      else{
+        if(!noResults){setState(() {noResults = true;});}
+        return returnList;
+      }
+    }
+    catch(e){
+      print(e);
+      if(isConnected)
+      {setState(() {isConnected = false;});}
+      return null;
+    }
   }
 
   @override
@@ -44,7 +65,15 @@ class _DetailBodyState extends State<DetailBody> {
   }
 
   Widget renderPage() {
-    if (returnList.isNotEmpty) {
+    if(!isConnected)
+    {
+    return Center(child: Column(children: <Widget>[Icon(Icons.signal_wifi_off, size: 100,), Text("NO WIFI",style: TextStyle(fontSize: 100),)]));
+    }
+    else if(noResults)
+    {
+    return Center(child: Column(children: <Widget>[Icon(Icons.block, size: 100,), Text("NO RESULTS",style: TextStyle(fontSize: 100),)]));
+    }
+    else if (returnList.isNotEmpty) {
       return Scrollbar(
         child: ListView(
           children: [
@@ -71,8 +100,7 @@ class _DetailBodyState extends State<DetailBody> {
                     children: [
                       Container(
                         margin: EdgeInsets.only(top: 5),
-                        child: Text(
-                          returnList[1],
+                        child: Text((returnList[1] != null) ? returnList[1] : "------",
                           style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
@@ -93,7 +121,7 @@ class _DetailBodyState extends State<DetailBody> {
                         child: Padding(
                           padding: const EdgeInsets.all(3.0),
                           child: Text(
-                            returnList[2],
+                            (returnList[2] != null) ? returnList[2] : "------",
                             style: TextStyle(fontSize: 15),
                           ),
                         ),
@@ -107,7 +135,7 @@ class _DetailBodyState extends State<DetailBody> {
                         child: Padding(
                           padding: const EdgeInsets.all(3.0),
                           child: Text(
-                            returnList[3].toString(),
+                            (returnList[3] != null) ? returnList[3].toString() : "------",
                             style: TextStyle(fontSize: 15),
                           ),
                         ),
@@ -131,7 +159,7 @@ class _DetailBodyState extends State<DetailBody> {
                               Padding(
                                 padding:
                                 const EdgeInsets.only(left: 3.0),
-                                child: Text(returnList[4].toString()),
+                                child: Text((returnList[4] != null) ? returnList[4].toString() : "------"),
                               ),
                             ],
                           ),
@@ -146,7 +174,7 @@ class _DetailBodyState extends State<DetailBody> {
                         child: Padding(
                           padding: const EdgeInsets.all(3.0),
                           child: Text(
-                            returnList[5],
+                            (returnList[5] != null) ? returnList[5] : "------",
                             style: TextStyle(fontSize: 15),
                           ),
                         ),
@@ -186,6 +214,7 @@ class _DetailBodyState extends State<DetailBody> {
         ),
       );
     }
+
     else {
       return Center(
         child: Container(

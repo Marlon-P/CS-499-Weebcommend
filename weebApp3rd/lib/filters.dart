@@ -66,10 +66,6 @@ class _filtersState extends State<filters> {
     try {Response response = await get(
         isSearching + "page=" + (pageList.length + 1).toString());
     data = jsonDecode(response.body);
-    if(!isConnected)
-      {
-        setState(() {isConnected = true;});
-      }
     }
     catch(e){
       print(e);
@@ -79,9 +75,8 @@ class _filtersState extends State<filters> {
     }
     List<AnimeThumbNails> temp = [];
     List<dynamic> yes = data['results'];
-    if(yes.isNotEmpty)
+    if(yes != null && yes.isNotEmpty)
     {yes.forEach((element) => temp.add(AnimeThumbNails(element['image_url'], element['title'],element['mal_id'], cache: true, height: 250)));
-    if(noResults) {setState(() {noResults = false;});}
     }
     else {if(!noResults){setState(() {noResults = true;});}}
     return temp;
@@ -335,6 +330,14 @@ class _filtersState extends State<filters> {
   }
 
   void go () {
+    if(!isConnected)
+      {
+        setState(() {isConnected = true;});
+      }
+    if(noResults)
+      {
+        setState(() {noResults = false;});
+      }
     stopPageFetching();
     String search = createQueryString();
     Future.delayed(const Duration(milliseconds: 2000),(){stopPageFetching(); renderPagesStart(search,1);});

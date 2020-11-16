@@ -77,17 +77,18 @@ class _RegSearchBarScreenState extends State<RegSearchBarScreen> {
 
   List<AnimeThumbNails> createAnimeThumbNails(BuiltList<dynamic> results) {
     List<AnimeThumbNails> atns = new List<AnimeThumbNails>();
-    var temp = results[0];
-    if (temp is Search) {
-      results.forEach((element) {
-        atns.add(new AnimeThumbNails.search_rec(element, null));
-      });
-    } else if (temp is Recommendation) {
-      results.forEach((element) {
-        atns.add(new AnimeThumbNails.search_rec(null, element));
-      });
-    } else {}
-
+    if(results.isNotEmpty) {
+      var temp = results[0];
+      if (temp is Search) {
+        results.forEach((element) {
+          atns.add(new AnimeThumbNails.search_rec(element, null));
+        });
+      } else if (temp is Recommendation) {
+        results.forEach((element) {
+          atns.add(new AnimeThumbNails.search_rec(null, element));
+        });
+      } else {}
+    }
     return atns;
   }
 
@@ -117,20 +118,13 @@ class _RegSearchBarScreenState extends State<RegSearchBarScreen> {
                   if (results.hasData) {
                     List<AnimeThumbNails> atn =
                         createAnimeThumbNails(results.data);
-                    if (atn != null) {
+                    if (atn != null && atn.isNotEmpty) {
                       return DisplayResultGrid(atn);
                     } else {
-                      return DisplayResultGrid(buildList());
+                      return Center(child: Column(children: <Widget>[Icon(Icons.block, size: 100,), Text("NO RESULTS",style: TextStyle(fontSize: 100),)]));
                     }
                   } else if (results.hasError) {
-                    children = <Widget>[
-                      Expanded(
-                        child: Text(
-                          'Result: not found',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      )
-                    ];
+                    return Center(child: Column(children: <Widget>[Icon(Icons.signal_wifi_off, size: 100,), Text("NO WIFI OR API ERROR",style: TextStyle(fontSize: 100),)]));
                   } else {
                     return Center(
                       child: Container(

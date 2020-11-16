@@ -1,4 +1,4 @@
-#Mon Nov 09 01:08:21 EST 2020
+#Sun Nov 15 22:10:54 EST 2020
 base.0=C\:\\Users\\essdessder\\Desktop\\appf\\CS-499-Weebcommend\\weebApp3rd\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes.dex
 path.0=classes.dex
 renamed.0=classes.dex
