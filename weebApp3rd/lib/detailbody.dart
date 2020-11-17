@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class DetailBody extends StatefulWidget {
   int animeID;
@@ -36,6 +37,7 @@ class _DetailBodyState extends State<DetailBody> {
         returnList.add(data['score']);
         returnList.add(data['rating']);
         returnList.add(data['synopsis']);
+        returnList.add(data['trailer_url']);
         if(noResults) {setState(() {noResults = false;});}
         return returnList;
       }
@@ -64,7 +66,30 @@ class _DetailBodyState extends State<DetailBody> {
         }));
   }
 
+  Widget renderYoutube(String url)
+  {
+    if(url != null)
+      {
+        YoutubePlayerController _controller = YoutubePlayerController(
+          initialVideoId: YoutubePlayer.convertUrlToId(url),
+          flags: YoutubePlayerFlags(
+            autoPlay: false,
+            mute: false,
+          ),
+        );
+        return YoutubePlayer(
+          controller: _controller,
+          showVideoProgressIndicator: true,
+        );
+      }
+    else {
+      return Text('');
+    }
+  }
+
+
   Widget renderPage() {
+
     if(!isConnected)
     {
     return Center(child: Column(children: <Widget>[Icon(Icons.signal_wifi_off, size: 100,), Text("NO WIFI",style: TextStyle(fontSize: 100),)]));
@@ -86,12 +111,12 @@ class _DetailBodyState extends State<DetailBody> {
                   EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
+                    child: (returnList[0] != null) ? Image.network(
                       returnList[0],
                       height: 250,
                       width: (250 * 0.64),
                       fit: BoxFit.fitHeight,
-                    ),
+                    ) : Icon(Icons.broken_image),
                   ),
                 ),
                 Expanded(
@@ -201,15 +226,21 @@ class _DetailBodyState extends State<DetailBody> {
               margin: EdgeInsets.symmetric(horizontal: 5),
               child: Padding(
                 padding: const EdgeInsets.all(3.0),
-                child: ReadMoreText(
+                child: (returnList[6] != null) ? ReadMoreText(
                   returnList[6],
                   style: TextStyle(fontSize: 18),
                   trimLines: 4,
                   trimMode: TrimMode.Line,
                   colorClickableText: Colors.blue,
-                ),
+                ) : Text("No Info"),
               ),
             ),
+            SizedBox(
+              child: Divider(
+                color: Colors.white,
+              ),
+            ),
+         renderYoutube(returnList[7]),
           ],
         ),
       );

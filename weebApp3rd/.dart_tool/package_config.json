@@ -50,6 +50,12 @@
       "languageVersion": "2.3"
     },
     {
+      "name": "colorful_safe_area",
+      "rootUri": "file:///C:/Users/essdessder/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/colorful_safe_area-0.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "convert",
       "rootUri": "file:///C:/Users/essdessder/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/convert-2.1.1",
       "packageUri": "lib/",
@@ -296,6 +302,12 @@
       "languageVersion": "2.0"
     },
     {
+      "name": "webview_media",
+      "rootUri": "file:///C:/Users/essdessder/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/webview_media-0.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.2"
+    },
+    {
       "name": "win32",
       "rootUri": "file:///C:/Users/essdessder/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/win32-1.7.3",
       "packageUri": "lib/",
@@ -308,13 +320,19 @@
       "languageVersion": "2.3"
     },
     {
+      "name": "youtube_player_flutter",
+      "rootUri": "file:///C:/Users/essdessder/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/youtube_player_flutter-6.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.5"
+    },
+    {
       "name": "weeb_app",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-11-08T18:59:09.417393Z",
+  "generated": "2020-11-17T03:45:06.998064Z",
   "generator": "pub",
   "generatorVersion": "2.9.2"
 }
