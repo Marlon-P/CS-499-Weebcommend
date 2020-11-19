@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:jikan_api/jikan_api.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,21 +6,24 @@ import 'package:flutter/material.dart';
 import 'package:weeb_app/home.dart';
 import 'package:weeb_app/gridview.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'dart:async';
+
 
 //this is actually the screen for both search bars (recommendation and regular)
 class RegSearchBarScreen extends StatefulWidget {
   String text;
   String searchMode;
+  List<String> animeTitles;
 
-  RegSearchBarScreen(String text, String searchMode) {
+  RegSearchBarScreen(String text, String searchMode, List<String> animeTitles) {
     this.text = text;
-    this.searchMode =
-        searchMode; //searchMode toggles from default to recommendation
+    this.searchMode = searchMode; //searchMode toggles from default to recommendation
+    this.animeTitles = animeTitles;
   }
 
   @override
   _RegSearchBarScreenState createState() =>
-      _RegSearchBarScreenState(text, searchMode);
+      _RegSearchBarScreenState(text, searchMode, animeTitles);
 }
 
 class _RegSearchBarScreenState extends State<RegSearchBarScreen> {
@@ -30,13 +32,15 @@ class _RegSearchBarScreenState extends State<RegSearchBarScreen> {
   List animes;
   String searchMode;
   String hintText;
+  List<String> animeTitles;
 
-  _RegSearchBarScreenState(String title, String searchMode) {
+
+  _RegSearchBarScreenState(String title, String searchMode, List<String> animeTitles) {
     this.title = title;
     this.jikan = new Jikan();
     this.animes = new List();
-    this.searchMode =
-        searchMode; //default search mode, searches for the anime title inputted and gives the anime info related to the title, no recommendations given
+    this.animeTitles = animeTitles;
+    this.searchMode = searchMode; //default search mode, searches for the anime title inputted and gives the anime info related to the title, no recommendations given
     if (this.searchMode == 'default') {
       this.hintText = 'Lookup an Anime';
     } else {
@@ -44,8 +48,12 @@ class _RegSearchBarScreenState extends State<RegSearchBarScreen> {
     }
   }
 
+
+
+
   @override
   void initState() {
+
     super.initState();
   }
 
@@ -68,7 +76,7 @@ class _RegSearchBarScreenState extends State<RegSearchBarScreen> {
     var search = await jikan.search(title, SearchType.anime);
 
     if (this.searchMode == 'recommend') {
-      //if the search mode is recommend, then this function will return a BuiltList of Recommendatio objects, otherwise return list of search objects
+      //if the search mode is recommend, then this function will return a BuiltList of Recommendation objects, otherwise return list of search objects
       return await jikan.getAnimeRecommendations(search[0].malId);
     }
 
@@ -92,70 +100,151 @@ class _RegSearchBarScreenState extends State<RegSearchBarScreen> {
     return atns;
   }
 
+
+
   @override
   Widget build(BuildContext context) {
+
+
+
+
     return Scaffold(
+
         body: SafeArea(
-      child: Wrap(
-        children: [
-          Container(
-              height: 80.0,
-              child: SearchBar(
-                onSearch: setTitle,
-                onItemFound: null,
-                textStyle: TextStyle(color: Colors.white),
-                hintText: this.hintText,
-              )),
-          Container(
-            height: MediaQuery.of(context).size.height - 80,
-            width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.fromLTRB(40.0, 0, 20.0, 0),
-            child: FutureBuilder<BuiltList<dynamic>>(
-                future: createAnimeList(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<BuiltList<dynamic>> results) {
-                  List<Widget> children;
-                  if (results.hasData) {
-                    List<AnimeThumbNails> atn =
+          child: Wrap(
+            children: [
+
+              Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+
+                child: FutureBuilder<BuiltList<dynamic>>(
+                    future: createAnimeList(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<BuiltList<dynamic>> results) {
+                      List<Widget> children;
+                      if (results.hasData) {
+                        List<AnimeThumbNails> atn =
                         createAnimeThumbNails(results.data);
-                    if (atn != null && atn.isNotEmpty) {
-                      return DisplayResultGrid(atn);
-                    } else {
-                      return Center(child: Column(children: <Widget>[Icon(Icons.block, size: 100,), Text("NO RESULTS",style: TextStyle(fontSize: 100),)]));
-                    }
-                  } else if (results.hasError) {
-                    return Center(child: Column(children: <Widget>[Icon(Icons.signal_wifi_off, size: 100,), Text("NO WIFI OR API ERROR",style: TextStyle(fontSize: 100),)]));
-                  } else {
-                    return Center(
-                      child: Container(
+                        if (atn != null && atn.isNotEmpty) {
+                          return DisplayResultGrid(atn);
+                        } else {
+                          return Center(child: Column(children: <Widget>[Icon(Icons.block, size: 100,), Text("NO RESULTS",style: TextStyle(fontSize: 100),)]));
+                        }
+                      } else if (results.hasError) {
+                        return Center(child: Column(children: <Widget>[Icon(Icons.signal_wifi_off, size: 100,), Text("NO WIFI OR API ERROR",style: TextStyle(fontSize: 100),)]));
+                      } else {
+                        return Center(
+                          child: Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SpinKitFadingCube(
+                                  color: Colors.white,
+                                  size: 50.0,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Text('loading'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+
+                      return Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SpinKitFadingCube(
-                              color: Colors.white,
-                              size: 50.0,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Text('loading'),
-                            ),
-                          ],
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: children,
                         ),
-                      ),
-                    );
-                  }
-                  ;
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: children,
-                    ),
-                  );
-                }),
-          )
-        ],
-      ),
-    ));
+                      );
+                    }),
+              )
+            ],
+          ),
+        ));
   }
+}
+
+class AutoSearchBar extends SearchDelegate {
+
+  List<String> titles;
+  bool isHomeScreen = false;
+  String searchMode;
+
+  AutoSearchBar(this.titles, this.isHomeScreen, this.searchMode);
+
+  @override
+  ThemeData appBarTheme(BuildContext context) => Theme.of(context);
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+
+    return [
+      IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () {
+            query = '';
+          }
+      )
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+
+    return
+      IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            if (query != null) {
+              close(context, null);
+            }else {
+
+            }
+          }
+      );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+
+    return RegSearchBarScreen(query, searchMode, titles);
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+
+
+    var suggestions;
+    if (query.isNotEmpty) {
+
+
+      suggestions = titles.where((e) => e.toLowerCase().contains(query.toLowerCase()) && e.toLowerCase().startsWith(query.toLowerCase())).toList();
+
+    } else {
+      suggestions = [];
+    }
+
+    return ListView.builder(
+        itemCount: suggestions.length,
+        itemBuilder: (_, i) {
+
+          var noun = suggestions[i];
+          return ListTile(
+              title: Text(noun),
+              onTap: () {
+                query = noun;
+                showResults(context);
+
+
+
+              }
+          );
+        }
+    );
+  }
+
 }
