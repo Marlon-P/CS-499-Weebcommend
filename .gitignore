@@ -1,0 +1,9 @@
+**/google-services.json
+**/Info.plist
+**/GoogleService-Info.plist
+*.dart_tool/
+*.flutter-plugins
+*.flutter-plugins-dependencies
+*.packages
+**/strings.xml
+**/build/

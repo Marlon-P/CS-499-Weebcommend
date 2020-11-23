@@ -63,7 +63,7 @@ class _homeState extends State<home> {
                                                 context,
                                                 MaterialPageRoute(builder: (context) {
 
-                                                  return new RegSearchBarScreen(Text, 'recommend');
+                                                  return new RegSearchBarScreen(Text, 'recommend', []);
                                                 })
                                             );
                                           },

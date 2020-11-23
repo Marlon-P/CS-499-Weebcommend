@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'read_more.dart';
 import 'package:http/http.dart';
@@ -5,19 +6,42 @@ import 'dart:convert';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class DetailBody extends StatefulWidget {
   int animeID;
   DetailBody(this.animeID);
-
   @override
   _DetailBodyState createState() => _DetailBodyState();
 }
 
 class _DetailBodyState extends State<DetailBody> {
+
   List<dynamic> returnList = [];
   bool isConnected = true;
   bool noResults = false;
+  FirebaseAuth _auth;
+
+  Future<FirebaseAuth> getAuth() async {
+    await Firebase.initializeApp();
+    FirebaseAuth auth = FirebaseAuth.instance;
+    return auth;
+  }
+
+
+  void facebookSignIn() async {
+    FacebookLogin loggedIn = FacebookLogin();
+    final result = await loggedIn.logIn(['email']);
+    final token = result.accessToken.token;
+    final response = await get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
+    print(response.body);
+    if(result.status == FacebookLoginStatus.loggedIn)
+      {
+        final credential = FacebookAuthProvider.credential(token);
+        _auth.signInWithCredential(credential);
+      }
+  }
 
   Future<List<dynamic>> getData() async {
     try {
@@ -64,6 +88,8 @@ class _DetailBodyState extends State<DetailBody> {
         setState(() {
           returnList = tempList;
         }));
+    Future returnAuth = getAuth();
+    returnAuth.then((value) => _auth = value);
   }
 
   Widget renderYoutube(String url)
@@ -241,6 +267,7 @@ class _DetailBodyState extends State<DetailBody> {
               ),
             ),
          renderYoutube(returnList[7]),
+            FlatButton(onPressed: (){facebookSignIn();}, child: Text("FACEBOOK"))
           ],
         ),
       );

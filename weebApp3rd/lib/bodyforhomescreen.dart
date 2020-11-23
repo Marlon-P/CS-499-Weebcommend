@@ -39,7 +39,7 @@ class _homeweebState extends State<homeweeb> {
         context,
         MaterialPageRoute(builder: (context) {
 
-          return new RegSearchBarScreen(text, 'default');
+          return new RegSearchBarScreen(text, 'default', []);
         })
     );
 

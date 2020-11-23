@@ -31,6 +31,10 @@ dependencies:
   flutter_spinkit: ^4.1.2
   colorful_safe_area: ^0.2.1
   youtube_player_flutter: ^6.1.1
+  firebase_auth: ^0.18.3
+  firebase_core: ^0.5.2
+  firebase_database: ^4.3.0
+  flutter_facebook_login: ^3.0.0
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
 FLUTTER_ROOT=C:\src\flutter
-FLUTTER_APPLICATION_PATH=C:\Users\essdessder\Desktop\newdir\CS-499-Weebcommend\weeb_app
+FLUTTER_APPLICATION_PATH=C:\Users\essdessder\Desktop\CS-499-Weebcommend\weebApp3rd
 FLUTTER_TARGET=lib\main.dart
 FLUTTER_BUILD_DIR=build
 SYMROOT=${SOURCE_ROOT}/../build\ios
