@@ -43,6 +43,14 @@ class _DetailBodyState extends State<DetailBody> {
       }
   }
 
+  void isLogged(){
+    FirebaseAuth.instance.authStateChanges().listen((User user) {if(user == null){print("no user");}else{print("signed in");}});
+  }
+
+  void signout(){
+    FirebaseAuth.instance.signOut();
+  }
+
   Future<List<dynamic>> getData() async {
     try {
       if(!isConnected)
@@ -267,7 +275,9 @@ class _DetailBodyState extends State<DetailBody> {
               ),
             ),
          renderYoutube(returnList[7]),
-            FlatButton(onPressed: (){facebookSignIn();}, child: Text("FACEBOOK"))
+            FlatButton(onPressed: (){facebookSignIn();}, child: Text("FACEBOOK")),
+            FlatButton(onPressed: (){isLogged();}, child: Text("Signed In?"),),
+            FlatButton(onPressed: (){signout();},child: Text("sign Out"))
           ],
         ),
       );

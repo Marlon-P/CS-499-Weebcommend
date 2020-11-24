@@ -7,3 +7,4 @@
 *.packages
 **/strings.xml
 **/build/
+*.DS_Store
