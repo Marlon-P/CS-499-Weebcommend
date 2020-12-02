@@ -1,19 +1,23 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:weeb_app/splashscreen.dart';
 import 'filters.dart';
 import 'package:jikan_api/jikan_api.dart';
+import 'login_page.dart';
 import 'regularSearchBarScreen.dart';
 import 'detailpage.dart';
 import 'package:extended_image/extended_image.dart';
+import 'signup_page.dart';
 import 'viewmoretop.dart';
-import 'regularSearchBarScreen.dart';
+
 
 
 class homeweeb extends StatefulWidget {
+
+
+
+
   @override
   _homeweebState createState() => _homeweebState();
 }
@@ -21,6 +25,9 @@ class homeweeb extends StatefulWidget {
 class _homeweebState extends State<homeweeb> {
   bool isConnected = true;
   List<String> animeTitles = [];
+
+
+
 
   fetchDataforHomescreen() async {
     var jikan = Jikan();
@@ -111,6 +118,35 @@ class _homeweebState extends State<homeweeb> {
 
   @override
   Widget build(BuildContext context) {
+
+    Widget signInTile = Container();
+
+    Widget signUpTile = Container();
+
+
+
+
+           signInTile = ListTile(
+               title: Text('Login'),
+               onTap: () {
+                 Navigator.push(context,
+                     MaterialPageRoute(builder: (context) => LoginPage()));
+
+               }
+           );
+           signUpTile = ListTile(
+               title: Text('Sign-up'),
+               onTap: () {
+                 // Code that leads to sign-up page
+                 Navigator.push(context,
+                     MaterialPageRoute(builder: (context) => SignupPage()));
+
+               }
+           );
+
+
+
+
     return FutureBuilder(
       future: fetchDataforHomescreen(),
       // ignore: missing_return
@@ -138,6 +174,27 @@ class _homeweebState extends State<homeweeb> {
                     }
                 )
               ],
+            ),
+            drawer: Drawer(
+              // Add a ListView to the drawer. This ensures the user can scroll
+              // through the options in the drawer if there isn't enough vertical
+              // space to fit everything.
+              child: ListView(
+                // Important: Remove any padding from the ListView.
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  DrawerHeader(
+                    child: Text('Weebcommend'),
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+
+                    ),
+                  ),
+                  signInTile,
+                  signUpTile,
+
+                ],
+              ),
             ),
             floatingActionButton: FloatingActionButton.extended(
               onPressed:() {
@@ -287,6 +344,7 @@ class AnimeThumbNails extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
+
     return Container(
       margin: EdgeInsets.all(3),
       child: Wrap(

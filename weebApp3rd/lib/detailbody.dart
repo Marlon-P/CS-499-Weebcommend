@@ -275,9 +275,9 @@ class _DetailBodyState extends State<DetailBody> {
               ),
             ),
          renderYoutube(returnList[7]),
-            FlatButton(onPressed: (){facebookSignIn();}, child: Text("FACEBOOK")),
-            FlatButton(onPressed: (){isLogged();}, child: Text("Signed In?"),),
-            FlatButton(onPressed: (){signout();},child: Text("sign Out"))
+            //FlatButton(onPressed: (){facebookSignIn();}, child: Text("FACEBOOK")),
+           // FlatButton(onPressed: (){isLogged();}, child: Text("Signed In?"),),
+            //FlatButton(onPressed: (){signout();},child: Text("sign Out"))
           ],
         ),
       );
