@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weeb_app/loading.dart';
 import 'package:weeb_app/services/auth.dart';
 
 class LoginPage extends StatefulWidget {
@@ -11,6 +12,8 @@ class _LoginPageState extends State<LoginPage> {
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+
+  bool loading = false;
 
   String email = '';
   String pass = '';
@@ -70,10 +73,12 @@ class _LoginPageState extends State<LoginPage> {
             if (result == null) {
               setState(() {
                 error = 'unable to sign in';
+                loading = false;
               });
             } else {
               setState(() {
                 error = '';
+                loading = true;
               });
               Navigator.pop(context);
               print('successfully signed in');
@@ -96,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
       style: TextStyle(color: Colors. red, fontSize: 14.0),
     );
 
-    return Scaffold(
+    return loading ? Loading() : Scaffold(
       appBar: AppBar(
         title: Text('Login Page'),
       ),

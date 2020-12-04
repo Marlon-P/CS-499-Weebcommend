@@ -1,20 +1,20 @@
 <component name="libraryTable">
   <library name="Flutter Plugins" type="FlutterPluginsLibraryType">
     <CLASSES>
+      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.6" />
+      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-0.0.1+2" />
+      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_database-4.3.0" />
+      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in_web-0.9.2" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_facebook_login-3.0.0" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-0.0.4+1" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth_web-0.3.2" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-0.2.1" />
-      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-0.0.1+2" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-0.0.4+4" />
+      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_facebook_auth-1.0.2+1" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/webview_media-0.1.2" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.5.2" />
-      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_database-4.3.0" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth-0.18.3" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-1.6.22" />
-      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.6" />
-      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in_web-0.9.2" />
-      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_facebook_auth-1.0.2+1" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

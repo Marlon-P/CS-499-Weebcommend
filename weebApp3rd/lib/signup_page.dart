@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:weeb_app/services/auth.dart';
 
+import 'loading.dart';
+
 class SignupPage extends StatefulWidget {
   @override
   _SignupPageState createState() => _SignupPageState();
@@ -10,6 +12,8 @@ class _SignupPageState extends State<SignupPage> {
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();//used for validation
+
+  bool loading = false;
 
   String email = '';
   String pass = '';
@@ -66,10 +70,12 @@ class _SignupPageState extends State<SignupPage> {
             if (result == null) {
               setState(() {
                 error = 'unable to register using those credentials';
+                loading = false;
               });
             } else {
               setState(() {
                 error = '';
+                loading = true;
               });
               Navigator.pop(context);
             }
@@ -97,7 +103,7 @@ class _SignupPageState extends State<SignupPage> {
       style: TextStyle(color: Colors. red, fontSize: 14.0),
     );
 
-    return Scaffold(
+    return loading ? Loading() : Scaffold(
       appBar: AppBar(
         title: Text('Sign-up Page'),
       ),

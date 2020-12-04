@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'login_page.dart';
 import 'read_more.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
@@ -9,9 +10,17 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'signup_page.dart';
+
 class DetailBody extends StatefulWidget {
   int animeID;
-  DetailBody(this.animeID);
+  User user;
+
+  DetailBody(this.animeID, this.user);
+
+
+
+
   @override
   _DetailBodyState createState() => _DetailBodyState();
 }
@@ -133,6 +142,66 @@ class _DetailBodyState extends State<DetailBody> {
     return Center(child: Column(children: <Widget>[Icon(Icons.block, size: 100,), Text("NO RESULTS",style: TextStyle(fontSize: 100),)]));
     }
     else if (returnList.isNotEmpty) {
+
+      Widget commentBox;
+
+
+
+      if (widget.user == null) {
+        commentBox = FlatButton(
+          shape:  RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+            side: BorderSide(color: Colors.white)
+            ),
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext buildContext) {
+                    return AlertDialog(
+                      title: Text('Sign in to comment'),
+
+                      actions: [
+                        FlatButton(
+                          textColor: Colors.white,
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pop(buildContext);
+
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => LoginPage()));
+                          },
+                          child: Text('Login'),
+                        ),
+                        FlatButton(
+                          textColor: Colors.white,
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pop(buildContext);
+
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => SignupPage()));
+                          },
+                          child: Text('Sign up'),
+                        ),
+                      ],
+                    );
+                  }
+              );
+            },
+            child: Text("Log in or Sign up to comment"));
+
+
+
+      } else {
+        print('signed in as a user');
+        commentBox = TextField(
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+            hintText: "Enter a comment",
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(32),
+            ),
+          ),
+        );
+      }
       return Scrollbar(
         child: ListView(
           children: [
@@ -278,6 +347,10 @@ class _DetailBodyState extends State<DetailBody> {
             //FlatButton(onPressed: (){facebookSignIn();}, child: Text("FACEBOOK")),
            // FlatButton(onPressed: (){isLogged();}, child: Text("Signed In?"),),
             //FlatButton(onPressed: (){signout();},child: Text("sign Out"))
+            SizedBox(
+              height: 5
+            ),
+            commentBox,
           ],
         ),
       );

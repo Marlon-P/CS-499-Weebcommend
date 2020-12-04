@@ -7,6 +7,8 @@ import 'package:weeb_app/wrapper.dart';
 
 
 
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
