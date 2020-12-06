@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:weeb_app/home.dart';
 import 'package:weeb_app/gridview.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'dart:async';
+
 
 
 //this is actually the screen for both search bars (recommendation and regular)
@@ -14,6 +14,7 @@ class RegSearchBarScreen extends StatefulWidget {
   String text;
   String searchMode;
   List<String> animeTitles;
+
 
   RegSearchBarScreen(String text, String searchMode, List<String> animeTitles) {
     this.text = text;
@@ -33,6 +34,7 @@ class _RegSearchBarScreenState extends State<RegSearchBarScreen> {
   String searchMode;
   String hintText;
   List<String> animeTitles;
+  List<AnimeThumbNails> apics;
 
 
   _RegSearchBarScreenState(String title, String searchMode, List<String> animeTitles) {
@@ -110,6 +112,23 @@ class _RegSearchBarScreenState extends State<RegSearchBarScreen> {
 
     return Scaffold(
 
+        appBar: AppBar(
+          title: Text(this.title),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.search),
+                onPressed: ()   {
+                  showSearch(
+                      context: context,
+                      delegate: AutoSearchBar(animeTitles, false, searchMode),
+                      query: ''
+
+                  );
+
+                }
+            )
+          ],
+        ),
         body: SafeArea(
           child: Wrap(
             children: [
@@ -122,10 +141,11 @@ class _RegSearchBarScreenState extends State<RegSearchBarScreen> {
                     future: createAnimeList(),
                     builder: (BuildContext context,
                         AsyncSnapshot<BuiltList<dynamic>> results) {
-                      List<Widget> children;
+
                       if (results.hasData) {
                         List<AnimeThumbNails> atn =
                         createAnimeThumbNails(results.data);
+                        apics = atn;
                         if (atn != null && atn.isNotEmpty) {
                           return DisplayResultGrid(atn);
                         } else {
@@ -153,13 +173,7 @@ class _RegSearchBarScreenState extends State<RegSearchBarScreen> {
                         );
                       }
 
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: children,
-                        ),
-                      );
+
                     }),
               )
             ],
@@ -195,23 +209,30 @@ class AutoSearchBar extends SearchDelegate {
   @override
   Widget buildLeading(BuildContext context) {
 
-    return
-      IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            if (query != null) {
-              close(context, null);
-            }else {
-
-            }
+    return IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          if (query != null) {
+            close(context, null);
           }
-      );
+        }
+    );
+
   }
 
+
+  @override
+  void showResults(BuildContext context) {
+
+    close(context, query);
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) =>
+            RegSearchBarScreen(query, searchMode, titles)));
+  }
   @override
   Widget buildResults(BuildContext context) {
 
-    return RegSearchBarScreen(query, searchMode, titles);
+    return null;
   }
 
   @override

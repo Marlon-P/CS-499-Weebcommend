@@ -26,18 +26,26 @@ class _DisplayResultGridState extends State<DisplayResultGrid> {
   @override
   Widget build(BuildContext context) {
     print(MediaQuery.of(context).size.height);
+
+    double h = MediaQuery.of(context).size.height;
+    double w = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: GridView.count(
-            padding: EdgeInsets.only(left: 11),
-            childAspectRatio: MediaQuery.of(context).size.width /
-                (MediaQuery.of(context).size.height/1.35),
-            crossAxisCount: 2,
-            children: widget.animeList,
+        body: SafeArea(
+          child: Container(
+
+            alignment: Alignment.center,
+            child: GridView.count(
+
+                crossAxisCount: 2,
+                childAspectRatio: w / (h*.87),
+                children: List.generate(widget.animeList.length, (index) {
+                  return widget.animeList.elementAt(index);
+                })
+
+            ),
           ),
-        ),
-      ),
+        )
     );
+
   }
 }

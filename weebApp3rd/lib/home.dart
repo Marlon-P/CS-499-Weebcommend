@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:weeb_app/splashscreen.dart';
+import 'package:weeb_app/CustomListTile.dart';
+//import 'package:weeb_app/splashscreen.dart';
 import 'filters.dart';
 import 'package:jikan_api/jikan_api.dart';
-import 'login_page.dart';
+import 'loading.dart';
 import 'regularSearchBarScreen.dart';
 import 'detailpage.dart';
 import 'package:extended_image/extended_image.dart';
-import 'signup_page.dart';
 import 'viewmoretop.dart';
 
 
@@ -116,33 +116,19 @@ class _homeweebState extends State<homeweeb> {
     super.initState();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
 
-    Widget signInTile = Container();
-
-    Widget signUpTile = Container();
 
 
 
 
-    signInTile = ListTile(
-        title: Text('Login'),
-        onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => LoginPage()));
+    Widget signInTile = CustomListTile(Icons.add_to_home_screen, 'Login');
 
-        }
-    );
-    signUpTile = ListTile(
-        title: Text('Sign-up'),
-        onTap: () {
-          // Code that leads to sign-up page
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => SignupPage()));
+    Widget signUpTile = CustomListTile(Icons.note_add, 'Sign Up');
 
-        }
-    );
 
 
 
@@ -154,9 +140,9 @@ class _homeweebState extends State<homeweeb> {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.active:
-            return splashScreen();
+            return Loading('Loaded');
           case ConnectionState.waiting:
-            return splashScreen();
+            return Loading('Loading Animes');
           case ConnectionState.done: return (isConnected) ?
           Scaffold(
             appBar: AppBar(
@@ -184,9 +170,35 @@ class _homeweebState extends State<homeweeb> {
                 padding: EdgeInsets.zero,
                 children: <Widget>[
                   DrawerHeader(
-                    child: Text('Weebcommend'),
+                    child: Container(
+                        child: Column(
+                          children: [
+                            Material(
+                                borderRadius: BorderRadius.all(Radius.circular(100.0)),
+                                elevation: 10,
+                                child: Container(
+
+                                    height: 80,
+                                    width: 80,
+                                    child: ClipRRect(
+                                      borderRadius:  BorderRadius.circular(100.0),
+                                      child: Image.asset('images/spiritedawayghost.png'),
+
+                                    )
+                                )
+                            ),
+                            SizedBox(
+                                height: 5
+                            ),
+                            Center(child: Text('Weebcommend')),
+                          ],
+                        )
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.blue,
+                        image: DecorationImage(
+                          image: AssetImage('images/purplegeobg.jpg'),
+                          fit: BoxFit.fill,
+                        )
 
                     ),
                   ),
@@ -310,6 +322,10 @@ class _homeweebState extends State<homeweeb> {
   }
 }
 
+
+
+
+
 class AnimeThumbNails extends StatelessWidget {
   String imgUrl;
   String animeTitle;
@@ -346,42 +362,48 @@ class AnimeThumbNails extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Container(
+      alignment: Alignment.center,
       margin: EdgeInsets.all(3),
       child: Wrap(
-        children: [
-          Column(children: [
-            InkWell(
-              borderRadius: BorderRadius.circular(7),
-              onTap: () {
-                //print('tapped');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => (DetailPage(animeID))),
-                );
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(7),
-                child: ExtendedImage.network(
-                  imgUrl,
-                  cache: cache,
-                  height: height,
-                  width: (height * 0.64),
-                  fit: BoxFit.fitHeight,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.circular(7),
+                  onTap: () {
+                    //print('tapped');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => (DetailPage(animeID))),
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(7),
+                    child: ExtendedImage.network(
+                      imgUrl,
+                      cache: cache,
+                      height: height,
+                      width: (height * 0.64),
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Container(
-              width: (height * 0.64),
-              child: Text(
-                animeTitle,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-              ),
+                Container(
+                  alignment: Alignment.center,
+                  width: (height * 0.64),
+                  child: Expanded(
+                    child: Text(
+                      animeTitle,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ]),
-        ],
-      ),
     );
   }
 }
@@ -394,6 +416,7 @@ class RowsContainingAnimeThumbNails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.center,
       height: 210,
       margin: EdgeInsets.only(top: 5),
       child: ListView(

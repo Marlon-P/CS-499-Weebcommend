@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:weeb_app/loading.dart';
 import 'package:weeb_app/services/auth.dart';
@@ -15,12 +16,20 @@ class _LoginPageState extends State<LoginPage> {
 
   bool loading = false;
 
+  bool obscureText = true;
   String email = '';
   String pass = '';
   String error = '';
 
+  void toggle() {
+    setState(() {
+      obscureText = !obscureText;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+
     //Variable created for email input
     final emailField = TextFormField(
       validator: (val) => val.isEmpty ? 'Enter an email' : null,
@@ -41,13 +50,17 @@ class _LoginPageState extends State<LoginPage> {
     //Variable created for password input
     final passwordField = TextFormField(
       validator: (val) => val.length < 6 ? 'Enter a password greater than 6 characters' : null,
-      obscureText: true,
+      obscureText: obscureText,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Password",
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32),
-        ),
+          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          hintText: "Password",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(32),
+          ),
+          suffixIcon: IconButton(
+            icon: Icon(Icons.security),
+            onPressed: toggle,
+          )
       ),
       onChanged: (val) {
         setState(() => pass = val);
@@ -101,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
       style: TextStyle(color: Colors. red, fontSize: 14.0),
     );
 
-    return loading ? Loading() : Scaffold(
+    return loading ? Loading('Signing In') : Scaffold(
       appBar: AppBar(
         title: Text('Login Page'),
       ),
@@ -197,8 +210,6 @@ class _LoginPageState extends State<LoginPage> {
                                               setState(() {
                                                 error = '';
                                               });
-                                              Navigator.pop(context);
-                                              print('successfully signed in');
 
                                             }
                                           },
@@ -232,17 +243,19 @@ class _LoginPageState extends State<LoginPage> {
                                           padding:
                                           EdgeInsets.fromLTRB(20, 15, 20, 15),
                                           onPressed: () async{
-                                            dynamic result = await _auth.signInWithGoogle();
+                                            UserCredential result = await _auth.signInWithGoogle(context);
                                             if (result == null) {
                                               setState(() {
                                                 error = 'unable to sign in';
                                               });
                                             } else {
-                                              setState(() {
-                                                error = '';
-                                              });
+
                                               Navigator.pop(context);
-                                              print('successfully signed in');
+                                              setState(() async {
+                                                error = '';
+
+
+                                              });
 
                                             }
                                           },
@@ -274,3 +287,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+

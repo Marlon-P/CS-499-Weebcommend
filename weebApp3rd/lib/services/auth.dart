@@ -1,16 +1,26 @@
+
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn(scopes: <String>[
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ],);
+  String signInMethod = 'emailPass'; //there are 3 different sign ins (Google sign in, facebook sign in and sign in with email) as well as 3 corresponding signouts
 
   //sign in with email and password
   Future signInWithEmailAndPass(String email, String pass) async{
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(email: email, password: pass);
       User user = result.user;
+      signInMethod = 'emailPass';
       return user;
     } catch (e) {
       print(e.toString());
@@ -29,6 +39,10 @@ class AuthService {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: pass);
       User user = result.user;
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('users').doc().set({'username' : email, 'watchlist' : []});
+      }
+      signInMethod = 'email';
       return user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -43,40 +57,90 @@ class AuthService {
   }
 
   //sign in with google
-  Future<UserCredential> signInWithGoogle() async {
+  Future signInWithGoogle(BuildContext context) async {
     // Trigger the authentication flow
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    try {
+      final GoogleSignInAccount googleUser = await googleSignIn.signIn();
 
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-    // Create a new credential
-    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
 
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Create a new credential
+      final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+
+
+      UserCredential result =  await _auth.signInWithCredential(credential);
+      User user = result.user;
+
+      signInMethod = 'google';
+      if (user != null) {
+
+
+
+        CollectionReference cRef = FirebaseFirestore.instance.collection('users').doc(user.uid).collection('users');
+        cRef.get().then((data) async {
+          data.size > 0 ? () {} :  await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : user.email, 'watchlist' : []});
+
+
+        }) ;
+      }
+
+
+      Navigator.pop(context);
+      return user;
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   //sign in with Facebook
-  Future<UserCredential> signInWithFacebook() async {
-    // Trigger the sign-in flow
-    final AccessToken result = await FacebookAuth.instance.login();
+  Future signInWithFacebook() async {
+    try {
+      // Trigger the sign-in flow
+      final AccessToken faceBookUser = await FacebookAuth.instance.login();
 
-    // Create a credential from the access token
-    final FacebookAuthCredential facebookAuthCredential =
-    FacebookAuthProvider.credential(result.token);
+      // Create a credential from the access token
+      final FacebookAuthCredential facebookAuthCredential =
+      FacebookAuthProvider.credential(faceBookUser.token);
 
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+      UserCredential cred =  await _auth.signInWithCredential(facebookAuthCredential);
+      User user = cred.user;
+
+      signInMethod = 'google';
+      if (user != null) {
+
+
+
+        CollectionReference cRef = FirebaseFirestore.instance.collection('users').doc(user.uid).collection('users');
+        cRef.get().then((data) async {
+          data.size > 0 ? () {} :  await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : user.email, 'watchlist' : []});
+
+
+        }) ;
+      }
+
+
+
+      return user;
+    } catch(e) {
+      print(e.toString());
+    }
   }
 
   //sign out
   Future signOut() async {
     try {
-      return await _auth.signOut();
+      switch (signInMethod) {
+        case 'emailPass': _auth.signOut(); break;
+        case 'google': googleSignIn.signOut(); break;
+      }
+
     }catch (e) {
       print(e.toString());
       return null;

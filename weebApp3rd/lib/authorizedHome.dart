@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:weeb_app/services/auth.dart';
-import 'package:weeb_app/splashscreen.dart';
+import 'package:weeb_app/CustomListTile.dart';
+import 'package:weeb_app/loading.dart';
+//import 'package:weeb_app/services/auth.dart';
+//import 'package:weeb_app/splashscreen.dart';
 import 'filters.dart';
 import 'package:jikan_api/jikan_api.dart';
 import 'regularSearchBarScreen.dart';
@@ -26,7 +28,7 @@ class _AuthHomeState extends State<AuthHome> {
 
 
 
-  final AuthService _auth = AuthService();
+
 
   fetchDataforHomescreen() async {
     var jikan = Jikan();
@@ -45,30 +47,36 @@ class _AuthHomeState extends State<AuthHome> {
           TopType.anime, subtype: TopSubtype.movie);
       var toptv = await jikan.getTop(TopType.anime, subtype: TopSubtype.tv);
 
+
+
       for (int i = 0; i <= 49; i++) {
         topCategories['Animes'].add(AnimeThumbNails(
           toppop[i].imageUrl,
           toppop[i].title,
           toppop[i].malId,
           cache: true,
+          height: 180,
         ));
         topCategories['Airing'].add(AnimeThumbNails(
           topair[i].imageUrl,
           topair[i].title,
           topair[i].malId,
           cache: true,
+          height: 180,
         ));
         topCategories['Movies'].add(AnimeThumbNails(
           topmovies[i].imageUrl,
           topmovies[i].title,
           topmovies[i].malId,
           cache: true,
+          height: 180,
         ));
         topCategories['TV'].add(AnimeThumbNails(
           toptv[i].imageUrl,
           toptv[i].title,
           toptv[i].malId,
           cache: true,
+          height: 180,
         ));
       }
       if(!isConnected)
@@ -119,13 +127,8 @@ class _AuthHomeState extends State<AuthHome> {
   Widget build(BuildContext context) {
 
 
-    Widget signOutTile = ListTile(
-        title: Text('Sign Out'),
-        onTap: () async {
-          await _auth.signOut();
-
-        }
-    );
+    Widget userTile = CustomListTile(Icons.person, 'User Page');
+    Widget signOutTile = CustomListTile(Icons.remove_circle, 'Sign Out');
 
 
 
@@ -139,9 +142,9 @@ class _AuthHomeState extends State<AuthHome> {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.active:
-            return splashScreen();
+            return Loading('Loaded');
           case ConnectionState.waiting:
-            return splashScreen();
+            return Loading('Loading Animes');
           case ConnectionState.done: return (isConnected) ?
           Scaffold(
             appBar: AppBar(
@@ -169,13 +172,40 @@ class _AuthHomeState extends State<AuthHome> {
                 padding: EdgeInsets.zero,
                 children: <Widget>[
                   DrawerHeader(
-                    child: Text('Weebcommend'),
+                    child: Container(
+                        child: Column(
+                          children: [
+                            Material(
+                                borderRadius: BorderRadius.all(Radius.circular(100.0)),
+                                elevation: 10,
+                                child: Container(
+
+                                    height: 100,
+                                    width: 100,
+                                    child: ClipRRect(
+                                      borderRadius:  BorderRadius.circular(100.0),
+
+                                      child: Image.asset('images/spiritedawayghost.png'),
+
+                                    )
+                                )
+                            ),
+                            SizedBox(
+                                height: 5
+                            ),
+                            Center(child: Text('Weebcommend')),
+                          ],
+                        )
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.blue,
+                        image: DecorationImage(
+                          image: AssetImage('images/purplegeobg.jpg'),
+                          fit: BoxFit.fill,
+                        )
 
                     ),
                   ),
-
+                  userTile,
                   signOutTile,
                 ],
               ),
@@ -309,7 +339,7 @@ class AnimeThumbNails extends StatelessWidget {
 
   @override
   AnimeThumbNails(String this.imgUrl, String this.animeTitle, int this.animeID,
-      {@required bool this.cache, double this.height = 180});
+      {@required bool this.cache, double this.height});
 
   AnimeThumbNails.search_rec([Search schAnime, Recommendation recAnime]) {
     if (schAnime != null) {
@@ -330,40 +360,44 @@ class AnimeThumbNails extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Container(
+      alignment: Alignment.center,
       margin: EdgeInsets.all(3),
       child: Wrap(
         children: [
-          Column(children: [
-            InkWell(
-              borderRadius: BorderRadius.circular(7),
-              onTap: () {
-                //print('tapped');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => (DetailPage(animeID))),
-                );
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(7),
-                child: ExtendedImage.network(
-                  imgUrl,
-                  cache: cache,
-                  height: height,
-                  width: (height * 0.64),
-                  fit: BoxFit.fitHeight,
+          Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.circular(7),
+                  onTap: () {
+                    //print('tapped');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => (DetailPage(animeID))),
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(7),
+                    child: ExtendedImage.network(
+                      imgUrl,
+                      cache: cache,
+                      height: height,
+                      width: (height * 0.64),
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Container(
-              width: (height * 0.64),
-              child: Text(
-                animeTitle,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ]),
+                Container(
+                  alignment: Alignment.center,
+                  width: (height * 0.64),
+                  child: Text(
+                    animeTitle,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ]),
         ],
       ),
     );

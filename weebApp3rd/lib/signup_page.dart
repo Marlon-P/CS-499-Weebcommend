@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:weeb_app/services/auth.dart';
 
@@ -14,6 +15,13 @@ class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();//used for validation
 
   bool loading = false;
+  bool obscureText = true;
+
+  void toggle(){
+    setState(() {
+      obscureText = !obscureText;
+    });
+  }
 
   String email = '';
   String pass = '';
@@ -41,17 +49,24 @@ class _SignupPageState extends State<SignupPage> {
     //Variable created for password input
     final passwordField = TextFormField(
       validator: (val) => val.length < 6 ? 'Enter a password greater than 6 characters' : null,
-      obscureText: true,
+      obscureText: obscureText,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Password",
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32),
-        ),
+          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          hintText: "Password",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(32),
+
+          ),
+          suffixIcon: IconButton(
+            icon: Icon(Icons.security),
+            onPressed: toggle,
+          )
       ),
       onChanged: (val) {
         setState(() => pass = val);
       },
+
+
     );
 
     //Login Button
@@ -73,11 +88,18 @@ class _SignupPageState extends State<SignupPage> {
                 loading = false;
               });
             } else {
-              setState(() {
+              Navigator.pop(context);
+
+              setState(() async {
+
                 error = '';
                 loading = true;
+
+
+
               });
-              Navigator.pop(context);
+
+
             }
           } else {
             setState(() {
@@ -103,7 +125,7 @@ class _SignupPageState extends State<SignupPage> {
       style: TextStyle(color: Colors. red, fontSize: 14.0),
     );
 
-    return loading ? Loading() : Scaffold(
+    return loading ? Loading('Registering') : Scaffold(
       appBar: AppBar(
         title: Text('Sign-up Page'),
       ),
@@ -142,3 +164,4 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 }
+
