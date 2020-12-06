@@ -126,23 +126,23 @@ class _homeweebState extends State<homeweeb> {
 
 
 
-           signInTile = ListTile(
-               title: Text('Login'),
-               onTap: () {
-                 Navigator.push(context,
-                     MaterialPageRoute(builder: (context) => LoginPage()));
+    signInTile = ListTile(
+        title: Text('Login'),
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => LoginPage()));
 
-               }
-           );
-           signUpTile = ListTile(
-               title: Text('Sign-up'),
-               onTap: () {
-                 // Code that leads to sign-up page
-                 Navigator.push(context,
-                     MaterialPageRoute(builder: (context) => SignupPage()));
+        }
+    );
+    signUpTile = ListTile(
+        title: Text('Sign-up'),
+        onTap: () {
+          // Code that leads to sign-up page
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => SignupPage()));
 
-               }
-           );
+        }
+    );
 
 
 
