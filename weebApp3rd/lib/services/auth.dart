@@ -41,6 +41,7 @@ class AuthService {
       User user = result.user;
       if (user != null) {
         await FirebaseFirestore.instance.collection('users').doc().set({'username' : email, 'watchlist' : []});
+        user.updateProfile(displayName: email, photoURL: '');
       }
       signInMethod = 'email';
       return user;
@@ -85,7 +86,7 @@ class AuthService {
 
         CollectionReference cRef = FirebaseFirestore.instance.collection('users').doc(user.uid).collection('users');
         cRef.get().then((data) async {
-          data.size > 0 ? () {} :  await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : user.email, 'watchlist' : []});
+          data.size > 0 ? () {} :  await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : user.email, 'watchlist' : []});  user.updateProfile(displayName: user.email, photoURL: '');
 
 
         }) ;
@@ -119,7 +120,7 @@ class AuthService {
 
         CollectionReference cRef = FirebaseFirestore.instance.collection('users').doc(user.uid).collection('users');
         cRef.get().then((data) async {
-          data.size > 0 ? () {} :  await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : user.email, 'watchlist' : []});
+          data.size > 0 ? () {} :  await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : user.email, 'watchlist' : []});     user.updateProfile(displayName: user.email, photoURL: '');
 
 
         }) ;
