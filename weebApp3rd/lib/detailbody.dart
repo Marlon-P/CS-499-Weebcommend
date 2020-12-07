@@ -6,12 +6,13 @@ import 'dart:convert';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'comAndScore.dart';
 import 'login_page.dart';
 import 'signup_page.dart';
+import 'commentTile.dart';
+
 
 class DetailBody extends StatefulWidget {
   int animeID;
@@ -34,42 +35,6 @@ class _DetailBodyState extends State<DetailBody> {
   void dispose(){
     myController.dispose();
     super.dispose();
-  }
-
-
-  /*
-  void getAuth() async {
-    //FirebaseAuth auth = FirebaseAuth.instance;
-    database = comAndScore(widget.animeID);
-    database.getDoc();
-
-
-    await FirebaseFirestore.instance.collection('comments').doc(widget.animeID.toString()).get().then((value) => {if(value.exists){print(value.data())}else{FirebaseFirestore.instance.collection('comments').doc(widget.animeID.toString()).set({'comments': [], 'scores': []})}});
-
-    //var buture = document.get();
-    //buture.then((value) => print(value.data()));
-    //return auth;
-  }*/
-
-  void facebookSignIn() async {
-    FacebookLogin loggedIn = FacebookLogin();
-    final result = await loggedIn.logIn(['email']);
-    final token = result.accessToken.token;
-    final response = await get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
-    print(response.body);
-    if(result.status == FacebookLoginStatus.loggedIn)
-      {
-        final credential = FacebookAuthProvider.credential(token);
-        _auth.signInWithCredential(credential);
-      }
-  }
-
-  bool isLogged(){
-    FirebaseAuth.instance.authStateChanges().listen((User user) {if(user == null){print("no user"); return false;}else{print("logged in"); return true;}});
-  }
-
-  void signout(){
-    FirebaseAuth.instance.signOut();
   }
 
   Future<List<dynamic>> getData() async {
@@ -159,14 +124,15 @@ class _DetailBodyState extends State<DetailBody> {
     for (int i = 0; i < sata['comments'].length; i++) {
         if (sata['comments'][i].containsValue(
             FirebaseAuth.instance.currentUser.uid)) {
-          return Column(children: [
+          return CommentTile(FirebaseAuth.instance.currentUser.uid,sata['comments'][i]['userName'],sata['comments'][i]['comment'],true,deleteUserComment);
+            /*Column(children: [
             Row(children: [Text(sata['comments'][i]['userName'], textAlign: TextAlign.left,),FlatButton(onPressed: () {
               database.deleteComment(
                   sata['comments'][i]['comment'], sata['comments'][i]['userID'],
                   sata['comments'][i]['userName']);
             }, child: Icon(Icons.restore_from_trash),)]),
             Text(sata['comments'][i]['comment'], textAlign: TextAlign.left),
-          ], crossAxisAlignment: CrossAxisAlignment.start);
+          ], crossAxisAlignment: CrossAxisAlignment.start);*/
         }
       }
     return Text('');
@@ -175,6 +141,11 @@ class _DetailBodyState extends State<DetailBody> {
     }
     else {return Text('');}
   }
+
+  void deleteUserComment(String comment, String userID, String userName){
+   database.deleteComment(comment, userID, userName);
+  }
+
 
   bool commentExists(var snapshot){
     if(snapshot.hasData && snapshot.data.data() != null && widget.user != null){
@@ -204,10 +175,14 @@ class _DetailBodyState extends State<DetailBody> {
             {sata['comments'].removeAt(i);}
         }
         if(sata['comments'].length > 0){
-        sata['comments'].forEach((e){tempList.add(Column(children: [
+        sata['comments'].forEach((e){tempList.add(
+        CommentTile('no_user',e['userName'],e['comment'],false,deleteUserComment));
+            /*Column(children: [
             Text(e['userName'], textAlign: TextAlign.left),
             Text(e['comment'], textAlign: TextAlign.left)
-          ], crossAxisAlignment: CrossAxisAlignment.start,));});
+          ], crossAxisAlignment: CrossAxisAlignment.start,));*/
+
+        });
           return tempList;
         }
         else {return tempList;}
@@ -424,9 +399,6 @@ class _DetailBodyState extends State<DetailBody> {
                   ),
                 ),
              renderYoutube(returnList[7]),
-                //FlatButton(onPressed: (){facebookSignIn();}, child: Text("FACEBOOK")),
-                //FlatButton(onPressed: (){isLogged();}, child: Text("Signed In?"),),
-                //FlatButton(onPressed: (){signout();},child: Text("sign Out")),
                 SizedBox(height: 5,),
               (widget.user == null) ?
             FlatButton(
@@ -482,25 +454,8 @@ class _DetailBodyState extends State<DetailBody> {
           ),
           ),
           ),
-
-                //FlatButton(onPressed: (){(commentExists(snapshot)) ? print("already there") : database.comment('bigchumgus22', FirebaseAuth.instance.currentUser.uid, 'test') ;},child: Text('submit'),),
                 if(widget.user != null) renderUserComment(snapshot),
                 Column(children: renderCommentList(snapshot), crossAxisAlignment: CrossAxisAlignment.start),
-                //Text((snapshot.hasData && snapshot.data.data() != null) ? commentExists(snapshot) : "loading"),
-                //ListView(children: renderCommentList(snapshot), scrollDirection: Axis.vertical,),
-                /*
-                FutureBuilder(
-                  future: database.getStream(),
-                  builder: (BuildContext context, AsyncSnapshot<Widget> snapshot){
-                    if(snapshot.connectionState == ConnectionState.done) {
-                      if(snapshot.data == null){return Text("loading");}
-                      else{
-                        print(snapshot.data);
-                        return snapshot.data;}
-                    }
-                    else{return Text("connecting");}
-                    },
-                ),*/
               ],
             ),
           );

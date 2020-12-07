@@ -210,6 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                                               setState(() {
                                                 error = '';
                                               });
+                                              Navigator.pop(context);
 
                                             }
                                           },
@@ -250,12 +251,13 @@ class _LoginPageState extends State<LoginPage> {
                                               });
                                             } else {
 
-                                              Navigator.pop(context);
+
                                               setState(() async {
                                                 error = '';
 
 
                                               });
+                                              Navigator.pop(context);
 
                                             }
                                           },
