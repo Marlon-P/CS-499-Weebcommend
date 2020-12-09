@@ -28,9 +28,9 @@ class _DetailBodyState extends State<DetailBody> {
   List<dynamic> returnList = [];
   bool isConnected = true;
   bool noResults = false;
-  FirebaseAuth _auth;
   comAndScore database;
   final myController = TextEditingController();
+  CollectionReference userProfile;
 
   @override
   void dispose(){
@@ -83,7 +83,7 @@ class _DetailBodyState extends State<DetailBody> {
         setState(() {
           returnList = tempList;
         }));
-    Firebase.initializeApp().then((value) => _auth = FirebaseAuth.instance).then((value) => database = comAndScore(widget.animeID)).then((value) => database.getDoc());
+    Firebase.initializeApp().then((value) => database = comAndScore(widget.animeID)).then((value) => database.getDoc()).then((value) => userProfile = FirebaseFirestore.instance.collection('users'));
   }
 
   Widget renderYoutube(String url)
@@ -126,14 +126,6 @@ class _DetailBodyState extends State<DetailBody> {
           if (sata['comments'][i].containsValue(
               FirebaseAuth.instance.currentUser.uid)) {
             return CommentTile(FirebaseAuth.instance.currentUser.uid,sata['comments'][i]['userName'],sata['comments'][i]['comment'],true,deleteUserComment);
-            /*Column(children: [
-            Row(children: [Text(sata['comments'][i]['userName'], textAlign: TextAlign.left,),FlatButton(onPressed: () {
-              database.deleteComment(
-                  sata['comments'][i]['comment'], sata['comments'][i]['userID'],
-                  sata['comments'][i]['userName']);
-            }, child: Icon(Icons.restore_from_trash),)]),
-            Text(sata['comments'][i]['comment'], textAlign: TextAlign.left),
-          ], crossAxisAlignment: CrossAxisAlignment.start);*/
           }
         }
         return Text('');
@@ -178,13 +170,8 @@ class _DetailBodyState extends State<DetailBody> {
         if(sata['comments'].length > 0){
           sata['comments'].forEach((e){tempList.add(
               CommentTile('no_user',e['userName'],e['comment'],false,deleteUserComment));
-            /*Column(children: [
-            Text(e['userName'], textAlign: TextAlign.left),
-            Text(e['comment'], textAlign: TextAlign.left)
-          ], crossAxisAlignment: CrossAxisAlignment.start,));*/
-
           });
-          return tempList;
+          return tempList.reversed.toList();
         }
         else {return tempList;}
       }
@@ -225,6 +212,31 @@ class _DetailBodyState extends State<DetailBody> {
     }
     else
     {return 0;}
+  }
+
+  void addToWatchList(){
+    Map tempMap = {'imgUrl' : returnList[0], 'animeTitle' : returnList[1], 'animeID': widget.animeID};
+    userProfile.doc(FirebaseAuth.instance.currentUser.uid).update({'watchlist': FieldValue.arrayUnion([tempMap])});
+  }
+
+  void removeFromWatchList(){
+    Map tempMap = {'imgUrl' : returnList[0], 'animeTitle' : returnList[1], 'animeID': widget.animeID};
+    userProfile.doc(FirebaseAuth.instance.currentUser.uid).update({'watchlist': FieldValue.arrayRemove([tempMap])});
+  }
+
+  bool containsShow(var snapshot){
+    if(snapshot.hasData && snapshot.data.data() != null) {
+      Map sata = snapshot.data.data();
+      if(sata['watchlist'].length > 0){
+        for(int i = 0; i < sata['watchlist'].length; i++){
+          if(sata['watchlist'][i].containsValue(widget.animeID))
+            {return true;}
+        }
+        return false;
+      }
+      else{return false;}
+    }
+    else {return false;}
   }
 
 
@@ -344,8 +356,10 @@ class _DetailBodyState extends State<DetailBody> {
                                         child: Text((displayScores(snapshot) != 0) ? displayScores(snapshot).toString() : "------"),
                                       ),
                                       Padding(
-                                          padding: const EdgeInsets.only(left: 6.0),
+                                          padding: const EdgeInsets.only(left: 36.0),
                                           child: DropdownButton<int>(value: (displayYourScore(snapshot) != 0) ? displayYourScore(snapshot) : 1, icon: Icon(Icons.arrow_downward), onChanged: (int newValue){(displayYourScore(snapshot) == 0) ? database.Updatescore(FirebaseAuth.instance.currentUser.uid, newValue, 0, true) : database.Updatescore(FirebaseAuth.instance.currentUser.uid, newValue, displayYourScore(snapshot), false);}, items: (widget.user == null) ? [] : [1,2,3,4,5,6,7,8,9,10].map<DropdownMenuItem<int>>((int value){return DropdownMenuItem<int>(value: value, child: Text(value.toString()));}).toList(),)
+                                      ,
+
                                       ),
                                     ],
                                   ),
@@ -364,7 +378,19 @@ class _DetailBodyState extends State<DetailBody> {
                                     style: TextStyle(fontSize: 15),
                                   ),
                                 ),
-                              ), //Rating e.g R
+                              ),
+                              (widget.user != null && userProfile != null) ?
+                              StreamBuilder<DocumentSnapshot>(
+                                stream: userProfile.doc(FirebaseAuth.instance.currentUser.uid.toString()).snapshots(),
+                                  builder: (context, snapshot){
+                                  if(snapshot.data == null) return FlatButton(onPressed: (){}, child: Text('Add to watchList'), color: Colors.grey);
+                                  return Container(
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),
+                                    color: Colors.grey.shade800,),
+                                  margin: EdgeInsets.only(top: 5, bottom: 5),
+                                  child: (containsShow(snapshot) == false) ? FlatButton(onPressed: (){(widget.user != null) ? addToWatchList() : {};},child: Text('Add to watchlist'), color: Colors.blue) : FlatButton(onPressed: (){(widget.user != null) ? removeFromWatchList() : {};}, child: Text('Remove from watchlist'), color: Colors.red)
+                              );}) : FlatButton(onPressed: (){}, child: Text('Add to watchList'), color: Colors.grey)
+                              ,//Rating e.g R
                               // RaisedButton(
                               //   onPressed: null,
                               //   child: Text('Recommendations'),
