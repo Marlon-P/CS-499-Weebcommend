@@ -4,6 +4,7 @@ import 'package:weeb_app/services/auth.dart';
 import 'package:weeb_app/signup_page.dart';
 
 import 'login_page.dart';
+import 'user_page.dart';
 
 
 
@@ -31,8 +32,9 @@ class CustomListTile extends StatelessWidget {
           } else if (text == 'Sign Out'){
             AuthService _auth = AuthService();
             await _auth.signOut();
-          } else {
-
+          } else if (text == 'User Page'){
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => UserPage()));
           }
         },
         child: IgnorePointer(
