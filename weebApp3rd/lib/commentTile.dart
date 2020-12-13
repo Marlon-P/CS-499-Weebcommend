@@ -31,13 +31,9 @@ class _CommentTileState extends State<CommentTile> {
                   child: Column(
                     children: [
                       CircleAvatar(
-                        radius: 25,
+                        radius: 30,
                         backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.account_circle,
-                          size: 50,
-                          color: Colors.grey,
-                        ),
+                        child: Image.network('https://robohash.org/${widget.userName}')
                       ),
 
                     ],

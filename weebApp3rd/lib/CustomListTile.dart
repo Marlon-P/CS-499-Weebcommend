@@ -32,7 +32,7 @@ class CustomListTile extends StatelessWidget {
           } else if (text == 'Sign Out'){
             AuthService _auth = AuthService();
             await _auth.signOut();
-          } else if (text == 'User Page'){
+          } else if (text == 'My Watchlist'){
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => UserPage()));
           }

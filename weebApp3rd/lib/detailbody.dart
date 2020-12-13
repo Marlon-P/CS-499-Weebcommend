@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:weeb_app/flushbarfunc.dart';
 import 'read_more.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
@@ -214,14 +215,16 @@ class _DetailBodyState extends State<DetailBody> {
     {return 0;}
   }
 
-  void addToWatchList(){
+  void addToWatchList(context){
     Map tempMap = {'imgUrl' : returnList[0], 'animeTitle' : returnList[1], 'animeID': widget.animeID};
     userProfile.doc(FirebaseAuth.instance.currentUser.uid).update({'watchlist': FieldValue.arrayUnion([tempMap])});
+    showFlushBar(context: context, text: 'Added to watch list');
   }
 
-  void removeFromWatchList(){
+  void removeFromWatchList(context){
     Map tempMap = {'imgUrl' : returnList[0], 'animeTitle' : returnList[1], 'animeID': widget.animeID};
     userProfile.doc(FirebaseAuth.instance.currentUser.uid).update({'watchlist': FieldValue.arrayRemove([tempMap])});
+    showFlushBar(context: context, text: 'Removed from watch list',color: Colors.red);
   }
 
   bool containsShow(var snapshot){
@@ -259,6 +262,20 @@ class _DetailBodyState extends State<DetailBody> {
               builder: (context, snapshot) {
                 return Column(
                   children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text((returnList[1] != null) ? returnList[1] : "----",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: Divider(
+                        color: Colors.white,
+                      ),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,20 +297,8 @@ class _DetailBodyState extends State<DetailBody> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Container(
-                                margin: EdgeInsets.only(top: 5),
-                                child: Text((returnList[1] != null) ? returnList[1] : "------",
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ), //Title
-                              Container(
-                                child: Divider(
-                                  color: Colors.white,
-                                ),
-                              ), //Divider
+                               //Title
+                              //Divider
                               Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
@@ -303,7 +308,7 @@ class _DetailBodyState extends State<DetailBody> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: Text(
-                                    (returnList[2] != null) ? returnList[2] : "------",
+                                    (returnList[2] != null) ? returnList[2] : "----",
                                     style: TextStyle(fontSize: 15),
                                   ),
                                 ),
@@ -317,7 +322,7 @@ class _DetailBodyState extends State<DetailBody> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: Text(
-                                    (returnList[3] != null) ? returnList[3].toString() : "------",
+                                    (returnList[3] != null) ? returnList[3].toString() : "----",
                                     style: TextStyle(fontSize: 15),
                                   ),
                                 ),
@@ -341,7 +346,7 @@ class _DetailBodyState extends State<DetailBody> {
                                       Padding(
                                         padding:
                                         const EdgeInsets.only(left: 3.0),
-                                        child: Text((returnList[4] != null) ? returnList[4].toString() : "------"),
+                                        child: Text((returnList[4] != null) ? returnList[4].toString() : "----"),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(3.0),
@@ -353,7 +358,7 @@ class _DetailBodyState extends State<DetailBody> {
                                       Padding(
                                         padding:
                                         const EdgeInsets.only(left: 3.0),
-                                        child: Text((displayScores(snapshot) != 0) ? displayScores(snapshot).toString() : "------"),
+                                        child: Text((displayScores(snapshot) != 0) ? displayScores(snapshot).toString() : "----"),
                                       ),
                                       Padding(
                                           padding: const EdgeInsets.only(left: 36.0),
@@ -374,7 +379,7 @@ class _DetailBodyState extends State<DetailBody> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: Text(
-                                    (returnList[5] != null) ? returnList[5] : "------",
+                                    (returnList[5] != null) ? returnList[5] : "----",
                                     style: TextStyle(fontSize: 15),
                                   ),
                                 ),
@@ -388,8 +393,8 @@ class _DetailBodyState extends State<DetailBody> {
                                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),
                                     color: Colors.grey.shade800,),
                                   margin: EdgeInsets.only(top: 5, bottom: 5),
-                                  child: (containsShow(snapshot) == false) ? FlatButton(onPressed: (){(widget.user != null) ? addToWatchList() : {};},child: Text('Add to watchlist'), color: Colors.blue) : FlatButton(onPressed: (){(widget.user != null) ? removeFromWatchList() : {};}, child: Text('Remove from watchlist'), color: Colors.red)
-                              );}) : FlatButton(onPressed: (){}, child: Text('Add to watchList'), color: Colors.grey)
+                                  child: (containsShow(snapshot) == false) ? FlatButton(onPressed: (){(widget.user != null) ? addToWatchList(context) : {};},child: Text('Add to watchlist'), color: Colors.blue) : FlatButton(onPressed: (){(widget.user != null) ? removeFromWatchList(context) : {};}, child: Text('Remove from watchlist'), color: Colors.red)
+                              );}): FlatButton(onPressed: (){}, child: Text('Add to watchList'), color: Colors.grey)
                               ,//Rating e.g R
                               // RaisedButton(
                               //   onPressed: null,

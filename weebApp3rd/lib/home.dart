@@ -341,7 +341,7 @@ class AnimeThumbNails extends StatelessWidget {
 
   @override
   AnimeThumbNails(String this.imgUrl, String this.animeTitle, int this.animeID,
-      {@required bool this.cache, double this.height = 180});
+      {@required bool this.cache, double this.height = 250});
 
   AnimeThumbNails.search_rec([Search schAnime, Recommendation recAnime]) {
     if (schAnime != null) {
@@ -417,7 +417,7 @@ class RowsContainingAnimeThumbNails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      height: 210,
+      height: 275,
       margin: EdgeInsets.only(top: 5),
       child: ListView(
         scrollDirection: Axis.horizontal,

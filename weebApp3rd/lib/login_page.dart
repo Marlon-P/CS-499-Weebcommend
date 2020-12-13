@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:weeb_app/loading.dart';
 import 'package:weeb_app/services/auth.dart';
+import 'forgotPasswordScreen.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -42,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       onChanged: (val) {
-        setState(() => email = val);
+        setState(() => email = val.trim());
       },
 
     );
@@ -141,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 FlatButton(
-                                    onPressed: () {},
+                                    onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder:(context)=>ForgotPasswordScreen())),
                                     child: Text(
                                       'Forgot Password?',
                                       style:

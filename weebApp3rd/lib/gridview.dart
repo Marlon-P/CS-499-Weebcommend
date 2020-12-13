@@ -37,7 +37,7 @@ class _DisplayResultGridState extends State<DisplayResultGrid> {
             child: GridView.count(
 
                 crossAxisCount: 2,
-                childAspectRatio: w / (h*.87),
+                childAspectRatio: w / (h *.87),
                 children: List.generate(widget.animeList.length, (index) {
                   return widget.animeList.elementAt(index);
                 })

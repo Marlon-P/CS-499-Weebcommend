@@ -55,21 +55,21 @@ class _AuthHomeState extends State<AuthHome> {
           toppop[i].title,
           toppop[i].malId,
           cache: true,
-          height: 180,
+          height: 250,
         ));
         topCategories['Airing'].add(AnimeThumbNails(
           topair[i].imageUrl,
           topair[i].title,
           topair[i].malId,
           cache: true,
-          height: 180,
+          height: 250,
         ));
         topCategories['Movies'].add(AnimeThumbNails(
           topmovies[i].imageUrl,
           topmovies[i].title,
           topmovies[i].malId,
           cache: true,
-          height: 180,
+          height: 250,
         ));
         topCategories['TV'].add(AnimeThumbNails(
           toptv[i].imageUrl,
@@ -127,7 +127,7 @@ class _AuthHomeState extends State<AuthHome> {
   Widget build(BuildContext context) {
 
 
-    Widget userTile = CustomListTile(Icons.person, 'User Page');
+    Widget userTile = CustomListTile(Icons.person, 'My Watchlist');
     Widget signOutTile = CustomListTile(Icons.remove_circle, 'Sign Out');
 
 
@@ -339,7 +339,7 @@ class AnimeThumbNails extends StatelessWidget {
 
   @override
   AnimeThumbNails(String this.imgUrl, String this.animeTitle, int this.animeID,
-      {@required bool this.cache, double this.height});
+      {@required bool this.cache, double this.height=250});
 
   AnimeThumbNails.search_rec([Search schAnime, Recommendation recAnime]) {
     if (schAnime != null) {
@@ -412,7 +412,7 @@ class RowsContainingAnimeThumbNails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 210,
+      height: 275,
       margin: EdgeInsets.only(top: 5),
       child: ListView(
         scrollDirection: Axis.horizontal,

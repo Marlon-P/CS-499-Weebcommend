@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:weeb_app/authorizedHome.dart';
+import 'package:weeb_app/gridview.dart';
 
 
 class UserPage extends StatefulWidget {
@@ -17,11 +19,27 @@ class _UserPageState extends State<UserPage> {
   bool _isEditingText = false;
   TextEditingController _editingController;
   String initialText = FirebaseAuth.instance.currentUser.displayName;
+  String uid = FirebaseAuth.instance.currentUser.uid;
 
   @override
   void initState() {
     super.initState();
     _editingController = TextEditingController(text: FirebaseAuth.instance.currentUser.displayName);
+  }
+
+  buildWatchList(AsyncSnapshot snapshot){
+
+    List<Widget> userWatchlist = [];
+    if(snapshot.hasData) {
+      List watchlistData = snapshot.data.data()['watchlist'];
+      for (Map<String, dynamic>anime in watchlistData) {
+        print(anime['imgUrl']);
+        userWatchlist.add(AnimeThumbNails(
+          anime['imgUrl'], anime['animeTitle'], anime['animeID'], cache: false,
+          height: 300,));
+      }
+    }
+    return userWatchlist;
   }
   @override
   void dispose() {
@@ -44,7 +62,7 @@ class _UserPageState extends State<UserPage> {
                   initialText = newValue;
                   _isEditingText =false;
                   FirebaseAuth.instance.currentUser.updateProfile(displayName: newValue);
-                  FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser.uid).set({'username' : newValue});
+                  FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser.uid).update({'username' : newValue});
                 });
               },
               autofocus: true,
@@ -68,10 +86,6 @@ class _UserPageState extends State<UserPage> {
 
             ),
               ),
-            IconButton(icon: Icon(Icons.mode_edit), onPressed: () {
-             setState(() {
-                _isEditingText = true;
-                });}),
           ],
         ),
       );
@@ -95,16 +109,10 @@ class _UserPageState extends State<UserPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: CircleAvatar(
                           radius: 80,
-                          backgroundImage: AssetImage('images/kazuma.png'),
+                          backgroundImage: NetworkImage('https://robohash.org/${username}'),
                           backgroundColor: Colors.black,
                         ),
                       ),
-                      new Positioned(
-                        right: 20.0,
-                        bottom: 1,
-                        child: IconButton(icon: Icon(Icons.camera_alt), onPressed: () {}),
-                      ),
-
                     ],
                   ),
                   Row(
@@ -145,6 +153,7 @@ class _UserPageState extends State<UserPage> {
                       )
                     ],
                   ),
+                  Expanded(child:DisplayResultGrid(buildWatchList(snapshot))),
                 ],
               ),
             ),
