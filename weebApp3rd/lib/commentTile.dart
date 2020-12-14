@@ -18,8 +18,15 @@ class _CommentTileState extends State<CommentTile> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Material(
-        color: Colors.grey.shade600,
-        borderRadius: BorderRadius.circular(5),
+        color: Colors.grey.shade800,
+        shadowColor: Colors.deepPurpleAccent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+          side: BorderSide(
+            width: 2,
+            color: Colors.deepPurpleAccent,
+          )
+        ),
         child: Container(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -64,7 +71,7 @@ class _CommentTileState extends State<CommentTile> {
                 child: IconButton(
                   icon: Icon(
                     Icons.delete,
-                    color: Colors.grey,
+                    color: Colors.white,
                   ),
                   onPressed: () {widget.deleteComment(widget.comment,widget.userID,widget.userName);},
                   tooltip: 'Delete comment',
