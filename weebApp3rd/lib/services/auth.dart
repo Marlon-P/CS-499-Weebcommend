@@ -40,7 +40,7 @@ class AuthService {
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: pass);
       User user = result.user;
       if (user != null) {
-        await FirebaseFirestore.instance.collection('users').doc().set({'username' : email, 'watchlist' : []});
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : email, 'watchlist' : []});
         user.updateProfile(displayName: email, photoURL: '');
       }
       signInMethod = 'email';
@@ -84,10 +84,14 @@ class AuthService {
 
 
 
-        CollectionReference cRef = FirebaseFirestore.instance.collection('users').doc(user.uid).collection('users');
+        DocumentReference cRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
         cRef.get().then((data) async {
-          data.size > 0 ? () {} :  await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : user.email, 'watchlist' : []});  user.updateProfile(displayName: user.email, photoURL: '');
 
+        if (!data.exists) {
+          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : user.email, 'watchlist' : []});  user.updateProfile(displayName: user.email, photoURL: ''); print('new user');
+        } else {
+          print('returning user');
+        }
 
         }) ;
       }
@@ -113,15 +117,14 @@ class AuthService {
       UserCredential cred =  await _auth.signInWithCredential(facebookAuthCredential);
       User user = cred.user;
 
-      signInMethod = 'google';
+      signInMethod = 'facebook';
       if (user != null) {
 
 
 
-        CollectionReference cRef = FirebaseFirestore.instance.collection('users').doc(user.uid).collection('users');
-        cRef.get().then((data) async {
-          data.size > 0 ? () {} :  await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : user.email, 'watchlist' : []});     user.updateProfile(displayName: user.email, photoURL: '');
-
+        DocumentReference dRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+        dRef.get().then((data) async {
+          data.exists ? () {print('user exists');} :  await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : user.email, 'watchlist' : []});     user.updateProfile(displayName: user.email, photoURL: ''); print('new user');
 
         }) ;
       }

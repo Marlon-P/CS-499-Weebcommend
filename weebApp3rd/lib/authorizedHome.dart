@@ -76,7 +76,7 @@ class _AuthHomeState extends State<AuthHome> {
           toptv[i].title,
           toptv[i].malId,
           cache: true,
-          height: 180,
+          height: 250,
         ));
       }
       if(!isConnected)
@@ -185,7 +185,7 @@ class _AuthHomeState extends State<AuthHome> {
                                     child: ClipRRect(
                                       borderRadius:  BorderRadius.circular(100.0),
 
-                                      child: Image.asset('images/spiritedawayghost.png'),
+                                      child: Image.asset('images/weebcommend_logo_circle.png'),
 
                                     )
                                 )

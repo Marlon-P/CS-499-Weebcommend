@@ -23,7 +23,14 @@ class MyApp extends StatelessWidget {
       value: AuthService().getUser(),
       child: MaterialApp(
         title: 'Weebcommend',
-        theme: ThemeData.dark(),
+        theme: ThemeData(
+            brightness: Brightness.dark,
+            accentColor: Colors.deepPurpleAccent,
+            hintColor: Colors.deepPurpleAccent,
+            appBarTheme: AppBarTheme(
+              color: Colors.deepPurpleAccent,
+            )
+        ),
         home: Wrapper(),
       ),
     );

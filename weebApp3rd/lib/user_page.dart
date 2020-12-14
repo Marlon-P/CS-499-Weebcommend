@@ -36,7 +36,7 @@ class _UserPageState extends State<UserPage> {
         print(anime['imgUrl']);
         userWatchlist.add(AnimeThumbNails(
           anime['imgUrl'], anime['animeTitle'], anime['animeID'], cache: false,
-          height: 300,));
+          height: 250,));
       }
     }
     return userWatchlist;
@@ -101,34 +101,20 @@ class _UserPageState extends State<UserPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Stack(
-
-                    children: [
-
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CircleAvatar(
-                          radius: 80,
-                          backgroundImage: NetworkImage('https://robohash.org/${username}'),
-                          backgroundColor: Colors.black,
-                        ),
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircleAvatar(
+                      radius: 80,
+                      backgroundImage: NetworkImage('https://robohash.org/${username}'),
+                      backgroundColor: Colors.black,
+                    ),
                   ),
-                  Row(
+                  Container(
+                      alignment: Alignment.center,
 
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/4),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-
-                        child: _editUsernameField()
-                      ),
-
-                    ],
+                      child: Text(username)
                   ),
+
                   Row(
                     children: [
                       Expanded(

@@ -182,7 +182,7 @@ class _homeweebState extends State<homeweeb> {
                                     width: 80,
                                     child: ClipRRect(
                                       borderRadius:  BorderRadius.circular(100.0),
-                                      child: Image.asset('images/spiritedawayghost.png'),
+                                      child: Image.asset('images/weebcommend_logo_circle.png'),
 
                                     )
                                 )

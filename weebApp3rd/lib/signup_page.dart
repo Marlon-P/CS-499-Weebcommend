@@ -58,7 +58,7 @@ class _SignupPageState extends State<SignupPage> {
 
           ),
           suffixIcon: IconButton(
-            icon: Icon(Icons.security),
+            icon: Icon(Icons.remove_red_eye),
             onPressed: toggle,
           )
       ),

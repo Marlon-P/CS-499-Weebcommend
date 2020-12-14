@@ -394,7 +394,9 @@ class _DetailBodyState extends State<DetailBody> {
                                     color: Colors.grey.shade800,),
                                   margin: EdgeInsets.only(top: 5, bottom: 5),
                                   child: (containsShow(snapshot) == false) ? FlatButton(onPressed: (){(widget.user != null) ? addToWatchList(context) : {};},child: Text('Add to watchlist'), color: Colors.blue) : FlatButton(onPressed: (){(widget.user != null) ? removeFromWatchList(context) : {};}, child: Text('Remove from watchlist'), color: Colors.red)
-                              );}): FlatButton(onPressed: (){}, child: Text('Add to watchList'), color: Colors.grey)
+                              );}): FlatButton(onPressed: (){
+
+                              }, child: Text('Add to watchList'), color: Colors.grey)
                               ,//Rating e.g R
                               // RaisedButton(
                               //   onPressed: null,

@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
             borderRadius: BorderRadius.circular(32),
           ),
           suffixIcon: IconButton(
-            icon: Icon(Icons.security),
+            icon: Icon(Icons.remove_red_eye),
             onPressed: toggle,
           )
       ),
@@ -245,7 +245,7 @@ class _LoginPageState extends State<LoginPage> {
                                           padding:
                                           EdgeInsets.fromLTRB(20, 15, 20, 15),
                                           onPressed: () async{
-                                            UserCredential result = await _auth.signInWithGoogle(context);
+                                            dynamic result = await _auth.signInWithGoogle(context);
                                             if (result == null) {
                                               setState(() {
                                                 error = 'unable to sign in';
