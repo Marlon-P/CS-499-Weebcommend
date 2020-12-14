@@ -73,7 +73,7 @@ class _SignupPageState extends State<SignupPage> {
     final registerButton = Material(
       elevation: 5,
       borderRadius: BorderRadius.circular(30),
-      color: Colors.redAccent,
+      color: Colors.teal.shade600,
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -157,7 +157,130 @@ class _SignupPageState extends State<SignupPage> {
                     )
                 ),
               ),
-            )
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Divider(
+                      thickness: 1,
+                      endIndent: 5,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Container(
+                    child: Text('OR SIGN UP WITH:'),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      thickness: 1,
+                      indent: 5,
+                      color: Colors.white,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Container(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      child: Material(
+                                        elevation: 5,
+                                        borderRadius: BorderRadius.circular(30),
+                                        color: Color(0xff3b5998),
+                                        child: MaterialButton(
+                                          minWidth:
+                                          MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width,
+                                          padding:
+                                          EdgeInsets.fromLTRB(20, 15, 20, 15),
+                                          onPressed: () async {
+                                            dynamic result = await _auth.signInWithFacebook();
+                                            if (result == null) {
+                                              setState(() {
+                                                error = 'unable to sign in';
+                                              });
+                                            } else {
+                                              setState(() {
+                                                error = '';
+                                              });
+                                              Navigator.pop(context);
+
+                                            }
+                                          },
+                                          child: Text(
+                                            'FACEBOOK',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      child: Material(
+                                        elevation: 5,
+                                        borderRadius: BorderRadius.circular(30),
+                                        color: Color(0xffde5246),
+                                        child: MaterialButton(
+                                          minWidth:
+                                          MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width,
+                                          padding:
+                                          EdgeInsets.fromLTRB(20, 15, 20, 15),
+                                          onPressed: () async{
+                                            dynamic result = await _auth.signInWithGoogle(context);
+                                            if (result == null) {
+                                              setState(() {
+                                                error = 'unable to sign in';
+                                              });
+                                            } else {
+
+
+                                              setState(() async {
+                                                error = '';
+
+
+                                              });
+                                              Navigator.pop(context);
+
+                                            }
+                                          },
+                                          child: Text(
+                                            'GOOGLE',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+
           ],
         ),
       ),
