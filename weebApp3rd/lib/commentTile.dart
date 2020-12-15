@@ -12,7 +12,8 @@ class CommentTile extends StatefulWidget {
   Function deleteComment;
   String userImage;
 
-  CommentTile(this.userID,this.userName,this.comment,this.isUser,this.deleteComment,this.userImage);
+  CommentTile(this.userID, this.userName, this.comment, this.isUser,
+      this.deleteComment, this.userImage);
   @override
   _CommentTileState createState() => _CommentTileState();
 }
@@ -26,12 +27,11 @@ class _CommentTileState extends State<CommentTile> {
         color: Colors.grey.shade800,
         shadowColor: Colors.deepPurpleAccent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-          side: BorderSide(
-            width: 2,
-            color: Colors.deepPurpleAccent,
-          )
-        ),
+            borderRadius: BorderRadius.circular(5),
+            side: BorderSide(
+              width: 2,
+              color: Colors.deepPurpleAccent,
+            )),
         child: Container(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -43,14 +43,18 @@ class _CommentTileState extends State<CommentTile> {
                   child: Column(
                     children: [
                       InkWell(
-                        onTap: (){Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (context) => (UserPage(widget.userID,Provider.of<User>(context)))));},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => (UserPage(widget.userID,
+                                      Provider.of<User>(context)))));
+                        },
                         child: CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Colors.white,
-                        child: Image.network(widget.userImage),
-                      ),
+                          radius: 30,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: NetworkImage(widget.userImage),
+                        ),
                       )
                     ],
                   ),
@@ -58,34 +62,40 @@ class _CommentTileState extends State<CommentTile> {
               ),
               Expanded(
                   child: Column(
-                    children: [
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(widget.userName, style: TextStyle(color: Colors.grey),),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10, bottom: 10),
-                          child: ReadMoreText(
-                            widget.comment,
-                            trimLength: 60,
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-              ),
-              if(widget.isUser) Container(
-                child: IconButton(
-                  icon: Icon(
-                    Icons.delete,
-                    color: Colors.white,
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      widget.userName,
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ),
-                  onPressed: () {widget.deleteComment(widget.comment,widget.userID,widget.userName,widget.userImage);},
-                  tooltip: 'Delete comment',
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      child: ReadMoreText(
+                        widget.comment,
+                        trimLength: 60,
+                      ),
+                    ),
+                  ),
+                ],
+              )),
+              if (widget.isUser)
+                Container(
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      widget.deleteComment(widget.comment, widget.userID,
+                          widget.userName, widget.userImage);
+                    },
+                    tooltip: 'Delete comment',
+                  ),
                 ),
-              ),
             ],
           ),
         ),
@@ -93,4 +103,3 @@ class _CommentTileState extends State<CommentTile> {
     );
   }
 }
-

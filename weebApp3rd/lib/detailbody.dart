@@ -15,7 +15,6 @@ import 'login_page.dart';
 import 'signup_page.dart';
 import 'commentTile.dart';
 
-
 class DetailBody extends StatefulWidget {
   int animeID;
   User user;
@@ -25,7 +24,6 @@ class DetailBody extends StatefulWidget {
 }
 
 class _DetailBodyState extends State<DetailBody> {
-
   List<dynamic> returnList = [];
   bool isConnected = true;
   bool noResults = false;
@@ -34,22 +32,23 @@ class _DetailBodyState extends State<DetailBody> {
   CollectionReference userProfile;
 
   @override
-  void dispose(){
+  void dispose() {
     myController.dispose();
     super.dispose();
   }
 
   Future<List<dynamic>> getData() async {
     try {
-      if(!isConnected)
-      {
-        setState(() {isConnected = true;});
+      if (!isConnected) {
+        setState(() {
+          isConnected = true;
+        });
       }
       Response response = await get(
           "https://api.jikan.moe/v3/anime/" + widget.animeID.toString());
       Map data = jsonDecode(response.body);
       List<dynamic> returnList = [];
-      if(data != null) {
+      if (data != null) {
         returnList.add(data['image_url']);
         returnList.add(data['title']);
         returnList.add(data['type']);
@@ -58,18 +57,27 @@ class _DetailBodyState extends State<DetailBody> {
         returnList.add(data['rating']);
         returnList.add(data['synopsis']);
         returnList.add(data['trailer_url']);
-        if(noResults) {setState(() {noResults = false;});}
+        if (noResults) {
+          setState(() {
+            noResults = false;
+          });
+        }
+        return returnList;
+      } else {
+        if (!noResults) {
+          setState(() {
+            noResults = true;
+          });
+        }
         return returnList;
       }
-      else{
-        if(!noResults){setState(() {noResults = true;});}
-        return returnList;
-      }
-    }
-    catch(e){
+    } catch (e) {
       print(e);
-      if(isConnected)
-      {setState(() {isConnected = false;});}
+      if (isConnected) {
+        setState(() {
+          isConnected = false;
+        });
+      }
       return null;
     }
   }
@@ -80,17 +88,18 @@ class _DetailBodyState extends State<DetailBody> {
     List<dynamic> tempList = returnList;
     Future returnData = getData();
     returnData.then((value) => tempList = value);
-    returnData.then((value) =>
-        setState(() {
+    returnData.then((value) => setState(() {
           returnList = tempList;
         }));
-    Firebase.initializeApp().then((value) => database = comAndScore(widget.animeID)).then((value) => database.getDoc()).then((value) => userProfile = FirebaseFirestore.instance.collection('users'));
+    Firebase.initializeApp()
+        .then((value) => database = comAndScore(widget.animeID))
+        .then((value) => database.getDoc())
+        .then((value) =>
+            userProfile = FirebaseFirestore.instance.collection('users'));
   }
 
-  Widget renderYoutube(String url)
-  {
-    if(url != null)
-    {
+  Widget renderYoutube(String url) {
+    if (url != null) {
       YoutubePlayerController _controller = YoutubePlayerController(
         initialVideoId: YoutubePlayer.convertUrlToId(url),
         flags: YoutubePlayerFlags(
@@ -102,176 +111,233 @@ class _DetailBodyState extends State<DetailBody> {
         controller: _controller,
         showVideoProgressIndicator: true,
       );
-    }
-    else {
+    } else {
       return Text('');
     }
   }
 
-  Widget renderComments(var snapshot){
-    if (snapshot.hasData && snapshot.data.data() != null)
-    {
+  Widget renderComments(var snapshot) {
+    if (snapshot.hasData && snapshot.data.data() != null) {
       Map data = snapshot.data.data();
       return Container(
         child: Text(data['comments'].toString() ?? 'default'),
       );
+    } else {
+      return Text("Loading");
     }
-    else {return Text("Loading");}
   }
 
-  Widget renderUserComment(var snapshot){
-    if(snapshot.hasData && snapshot.data.data() != null && widget.user != null){
+  Widget renderUserComment(var snapshot) {
+    if (snapshot.hasData &&
+        snapshot.data.data() != null &&
+        widget.user != null) {
       Map sata = snapshot.data.data();
-      if(sata['comments'].length > 0){
+      if (sata['comments'].length > 0) {
         for (int i = 0; i < sata['comments'].length; i++) {
-          if (sata['comments'][i].containsValue(
-              FirebaseAuth.instance.currentUser.uid)) {
-            return CommentTile(FirebaseAuth.instance.currentUser.uid,sata['comments'][i]['userName'],sata['comments'][i]['comment'],true,deleteUserComment,sata['comments'][i]['image']);
+          if (sata['comments'][i]
+              .containsValue(FirebaseAuth.instance.currentUser.uid)) {
+            return CommentTile(
+                FirebaseAuth.instance.currentUser.uid,
+                FirebaseAuth.instance.currentUser.displayName,
+                sata['comments'][i]['comment'],
+                true,
+                deleteUserComment,
+                FirebaseAuth.instance.currentUser.photoURL);
           }
         }
         return Text('');
+      } else {
+        return Text('');
       }
-      else{return Text('');}
+    } else {
+      return Text('');
     }
-    else {return Text('');}
   }
 
-  void deleteUserComment(String comment, String userID, String userName, String userImage){
+  void deleteUserComment(
+      String comment, String userID, String userName, String userImage) {
     database.deleteComment(comment, userID, userName, userImage);
   }
 
-
-  bool commentExists(var snapshot){
-    if(snapshot.hasData && snapshot.data.data() != null && widget.user != null){
+  bool commentExists(var snapshot) {
+    if (snapshot.hasData &&
+        snapshot.data.data() != null &&
+        widget.user != null) {
       Map sata = snapshot.data.data();
-      if(sata['comments'].length > 0){
+      if (sata['comments'].length > 0) {
         for (int i = 0; i < sata['comments'].length; i++) {
-          if (sata['comments'][i].containsValue(
-              FirebaseAuth.instance.currentUser.uid)) {
+          if (sata['comments'][i]
+              .containsValue(FirebaseAuth.instance.currentUser.uid)) {
             return true;
           }
         }
         return false;
+      } else {
+        return false;
       }
-      else{return false;}
+    } else {
+      return false;
     }
-    else {return false;}
   }
 
-  List<Widget> renderCommentList(var snapshot){
+  List<Widget> renderCommentList(var snapshot) {
     List<Widget> tempList = [];
-    if (snapshot.hasData && snapshot.data.data() != null)
-    {
+    if (snapshot.hasData && snapshot.data.data() != null) {
       Map sata = snapshot.data.data();
-      if(sata['comments'].length > 0){
-        for(int i = 0; i < sata['comments'].length; i++){
-          if(widget.user != null && sata['comments'][i].containsValue(FirebaseAuth.instance.currentUser.uid))
-          {sata['comments'].removeAt(i);}
+      if (sata['comments'].length > 0) {
+        for (int i = 0; i < sata['comments'].length; i++) {
+          if (widget.user != null &&
+              sata['comments'][i]
+                  .containsValue(FirebaseAuth.instance.currentUser.uid)) {
+            sata['comments'].removeAt(i);
+          }
         }
-        if(sata['comments'].length > 0){
-          sata['comments'].forEach((e){tempList.add(
-              CommentTile(e['userID'],e['userName'],e['comment'],false,deleteUserComment,e['image']));
+        if (sata['comments'].length > 0) {
+          sata['comments'].forEach((e) {
+            tempList.add(CommentTile(e['userID'], e['userName'], e['comment'],
+                false, deleteUserComment, e['image']));
           });
           return tempList.reversed.toList();
+        } else {
+          return tempList;
         }
-        else {return tempList;}
+      } else {
+        return tempList;
       }
-      else{return tempList;}
+    } else {
+      return tempList;
     }
-    else{return tempList;}
   }
 
-  int displayScores(var snapshot){
-    if(snapshot.hasData && snapshot.data.data() != null)
-    {
+  int displayScores(var snapshot) {
+    if (snapshot.hasData && snapshot.data.data() != null) {
       int average = 0;
       Map sata = snapshot.data.data();
-      if(sata['scores'].length > 0){
-        for(int i = 0; i < sata['scores'].length; i++){
+      if (sata['scores'].length > 0) {
+        for (int i = 0; i < sata['scores'].length; i++) {
           average += sata['scores'][i]['score'];
         }
-        return (average/sata['scores'].length).floor();
-      }
-      else{return 0;}
-    }
-    else
-    {return 0;}
-  }
-
-  int displayYourScore(var snapshot){
-    if(snapshot.hasData && snapshot.data.data() != null && widget.user != null)
-    {
-      Map sata = snapshot.data.data();
-      if(sata['scores'].length > 0){
-        for(int i = 0; i < sata['scores'].length; i++){
-          if(sata['scores'][i].containsValue(FirebaseAuth.instance.currentUser.uid))
-          {return sata['scores'][i]['score'];}
-        }
+        return (average / sata['scores'].length).floor();
+      } else {
         return 0;
       }
-      else{return 0;}
+    } else {
+      return 0;
     }
-    else
-    {return 0;}
   }
 
-  void newComment(String val) async{
-    var personRef = FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser.uid);
+  int displayYourScore(var snapshot) {
+    if (snapshot.hasData &&
+        snapshot.data.data() != null &&
+        widget.user != null) {
+      Map sata = snapshot.data.data();
+      if (sata['scores'].length > 0) {
+        for (int i = 0; i < sata['scores'].length; i++) {
+          if (sata['scores'][i]
+              .containsValue(FirebaseAuth.instance.currentUser.uid)) {
+            return sata['scores'][i]['score'];
+          }
+        }
+        return 0;
+      } else {
+        return 0;
+      }
+    } else {
+      return 0;
+    }
+  }
+
+  void newComment(String val) async {
+    var personRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid);
     DocumentSnapshot profile = await personRef.get();
-    database.comment(val, FirebaseAuth.instance.currentUser.uid, profile['username'], profile['image']);
-
+    database.comment(val, FirebaseAuth.instance.currentUser.uid,
+        profile['username'], profile['image']);
   }
 
-  void addToWatchList(context){
-    Map tempMap = {'imgUrl' : returnList[0], 'animeTitle' : returnList[1], 'animeID': widget.animeID};
-    userProfile.doc(FirebaseAuth.instance.currentUser.uid).update({'watchlist': FieldValue.arrayUnion([tempMap])});
+  void addToWatchList(context) {
+    Map tempMap = {
+      'imgUrl': returnList[0],
+      'animeTitle': returnList[1],
+      'animeID': widget.animeID
+    };
+    userProfile.doc(FirebaseAuth.instance.currentUser.uid).update({
+      'watchlist': FieldValue.arrayUnion([tempMap])
+    });
     showFlushBar(context: context, text: 'Added to watch list');
   }
 
-  void removeFromWatchList(context){
-    Map tempMap = {'imgUrl' : returnList[0], 'animeTitle' : returnList[1], 'animeID': widget.animeID};
-    userProfile.doc(FirebaseAuth.instance.currentUser.uid).update({'watchlist': FieldValue.arrayRemove([tempMap])});
-    showFlushBar(context: context, text: 'Removed from watch list',color: Colors.red);
+  void removeFromWatchList(context) {
+    Map tempMap = {
+      'imgUrl': returnList[0],
+      'animeTitle': returnList[1],
+      'animeID': widget.animeID
+    };
+    userProfile.doc(FirebaseAuth.instance.currentUser.uid).update({
+      'watchlist': FieldValue.arrayRemove([tempMap])
+    });
+    showFlushBar(
+        context: context, text: 'Removed from watch list', color: Colors.red);
   }
 
-  bool containsShow(var snapshot){
-    if(snapshot.hasData && snapshot.data.data() != null) {
+  bool containsShow(var snapshot) {
+    if (snapshot.hasData && snapshot.data.data() != null) {
       Map sata = snapshot.data.data();
-      if(sata['watchlist'].length > 0){
-        for(int i = 0; i < sata['watchlist'].length; i++){
-          if(sata['watchlist'][i].containsValue(widget.animeID))
-            {return true;}
+      if (sata['watchlist'].length > 0) {
+        for (int i = 0; i < sata['watchlist'].length; i++) {
+          if (sata['watchlist'][i].containsValue(widget.animeID)) {
+            return true;
+          }
         }
         return false;
+      } else {
+        return false;
       }
-      else{return false;}
+    } else {
+      return false;
     }
-    else {return false;}
   }
 
-
-  Widget renderPage()  {
-
-    if(!isConnected)
-    {
-      return Center(child: Column(children: <Widget>[Icon(Icons.signal_wifi_off, size: 100,), Text("NO WIFI",style: TextStyle(fontSize: 100),)]));
-    }
-    else if(noResults)
-    {
-      return Center(child: Column(children: <Widget>[Icon(Icons.block, size: 100,), Text("NO RESULTS",style: TextStyle(fontSize: 100),)]));
-    }
-    else if (returnList.isNotEmpty) {
+  Widget renderPage() {
+    if (!isConnected) {
+      return Center(
+          child: Column(children: <Widget>[
+        Icon(
+          Icons.signal_wifi_off,
+          size: 100,
+        ),
+        Text(
+          "NO WIFI",
+          style: TextStyle(fontSize: 100),
+        )
+      ]));
+    } else if (noResults) {
+      return Center(
+          child: Column(children: <Widget>[
+        Icon(
+          Icons.block,
+          size: 100,
+        ),
+        Text(
+          "NO RESULTS",
+          style: TextStyle(fontSize: 100),
+        )
+      ]));
+    } else if (returnList.isNotEmpty) {
       return ListView(
         //mainAxisSize: MainAxisSize.min,
         children: [
           StreamBuilder<DocumentSnapshot>(
-              stream: database.theDoc.doc(widget.animeID.toString()).snapshots(),
+              stream:
+                  database.theDoc.doc(widget.animeID.toString()).snapshots(),
               builder: (context, snapshot) {
                 return Column(
                   children: [
                     Container(
                       margin: EdgeInsets.only(top: 5),
-                      child: Text((returnList[1] != null) ? returnList[1] : "----",
+                      child: Text(
+                        (returnList[1] != null) ? returnList[1] : "----",
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
@@ -289,22 +355,24 @@ class _DetailBodyState extends State<DetailBody> {
                       children: [
                         Container(
                           margin:
-                          EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                              EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: (returnList[0] != null) ? Image.network(
-                              returnList[0],
-                              height: 250,
-                              width: (250 * 0.64),
-                              fit: BoxFit.fitHeight,
-                            ) : Icon(Icons.broken_image),
+                            child: (returnList[0] != null)
+                                ? Image.network(
+                                    returnList[0],
+                                    height: 250,
+                                    width: (250 * 0.64),
+                                    fit: BoxFit.fitHeight,
+                                  )
+                                : Icon(Icons.broken_image),
                           ),
                         ),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                               //Title
+                              //Title
                               //Divider
                               Container(
                                 decoration: BoxDecoration(
@@ -315,7 +383,9 @@ class _DetailBodyState extends State<DetailBody> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: Text(
-                                    (returnList[2] != null) ? returnList[2] : "----",
+                                    (returnList[2] != null)
+                                        ? returnList[2]
+                                        : "----",
                                     style: TextStyle(fontSize: 15),
                                   ),
                                 ),
@@ -329,7 +399,10 @@ class _DetailBodyState extends State<DetailBody> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: Text(
-                                    (returnList[3] != null) ? 'Episodes: ' + returnList[3].toString() : "----",
+                                    (returnList[3] != null)
+                                        ? 'Episodes: ' +
+                                            returnList[3].toString()
+                                        : "----",
                                     style: TextStyle(fontSize: 15),
                                   ),
                                 ),
@@ -345,27 +418,72 @@ class _DetailBodyState extends State<DetailBody> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(3.0),
-                                        child: Text('MAL',style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),),
+                                        child: Text(
+                                          'MAL',
+                                          style: TextStyle(
+                                              color: Colors.blue,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                       ),
                                       Padding(
                                         padding:
-                                        const EdgeInsets.only(left: 3.0),
-                                        child: Text((returnList[4] != null) ? returnList[4].toString() : "----"),
+                                            const EdgeInsets.only(left: 3.0),
+                                        child: Text((returnList[4] != null)
+                                            ? returnList[4].toString()
+                                            : "----"),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(3.0),
-                                        child: Text('Weeb', style: TextStyle(color: Colors.purpleAccent, fontWeight: FontWeight.bold),),
+                                        child: Text(
+                                          'Weeb',
+                                          style: TextStyle(
+                                              color: Colors.purpleAccent,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                       ),
                                       Padding(
                                         padding:
-                                        const EdgeInsets.only(left: 3.0),
-                                        child: Text((displayScores(snapshot) != 0) ? displayScores(snapshot).toString() : "----"),
+                                            const EdgeInsets.only(left: 3.0),
+                                        child: Text((displayScores(snapshot) !=
+                                                0)
+                                            ? displayScores(snapshot).toString()
+                                            : "----"),
                                       ),
                                       Padding(
-                                          padding: const EdgeInsets.only(left: 36.0),
-                                          child: DropdownButton<int>(value: (displayYourScore(snapshot) != 0) ? displayYourScore(snapshot) : 1, icon: Icon(Icons.arrow_downward), onChanged: (int newValue){(displayYourScore(snapshot) == 0) ? database.Updatescore(FirebaseAuth.instance.currentUser.uid, newValue, 0, true) : database.Updatescore(FirebaseAuth.instance.currentUser.uid, newValue, displayYourScore(snapshot), false);}, items: (widget.user == null) ? [] : [1,2,3,4,5,6,7,8,9,10].map<DropdownMenuItem<int>>((int value){return DropdownMenuItem<int>(value: value, child: Text(value.toString()));}).toList(),)
-                                      ,
-
+                                        padding:
+                                            const EdgeInsets.only(left: 36.0),
+                                        child: DropdownButton<int>(
+                                          value:
+                                              (displayYourScore(snapshot) != 0)
+                                                  ? displayYourScore(snapshot)
+                                                  : 1,
+                                          icon: Icon(Icons.arrow_downward),
+                                          onChanged: (int newValue) {
+                                            (displayYourScore(snapshot) == 0)
+                                                ? database.Updatescore(
+                                                    FirebaseAuth.instance
+                                                        .currentUser.uid,
+                                                    newValue,
+                                                    0,
+                                                    true)
+                                                : database.Updatescore(
+                                                    FirebaseAuth.instance
+                                                        .currentUser.uid,
+                                                    newValue,
+                                                    displayYourScore(snapshot),
+                                                    false);
+                                          },
+                                          items: (widget.user == null)
+                                              ? []
+                                              : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                                                  .map<DropdownMenuItem<int>>(
+                                                      (int value) {
+                                                  return DropdownMenuItem<int>(
+                                                      value: value,
+                                                      child: Text(
+                                                          value.toString()));
+                                                }).toList(),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -380,25 +498,61 @@ class _DetailBodyState extends State<DetailBody> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: Text(
-                                    (returnList[5] != null) ? returnList[5] : "----",
+                                    (returnList[5] != null)
+                                        ? returnList[5]
+                                        : "----",
                                     style: TextStyle(fontSize: 15),
                                   ),
                                 ),
                               ),
-                              (widget.user != null && userProfile != null) ?
-                              StreamBuilder<DocumentSnapshot>(
-                                stream: userProfile.doc(FirebaseAuth.instance.currentUser.uid.toString()).snapshots(),
-                                  builder: (context, snapshot){
-                                  if(snapshot.data == null) return FlatButton(onPressed: (){}, child: Text('Add to watchList'), color: Colors.grey);
-                                  return Container(
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),
-                                    color: Colors.grey.shade800,),
-                                  margin: EdgeInsets.only(top: 5, bottom: 5),
-                                  child: (containsShow(snapshot) == false) ? FlatButton(onPressed: (){(widget.user != null) ? addToWatchList(context) : {};},child: Text('Add to watchlist'), color: Colors.blue) : FlatButton(onPressed: (){(widget.user != null) ? removeFromWatchList(context) : {};}, child: Text('Remove from watchlist'), color: Colors.red)
-                              );}): FlatButton(onPressed: (){
-
-                              }, child: Text('Add to watchList'), color: Colors.grey)
-                              ,//Rating e.g R
+                              (widget.user != null && userProfile != null)
+                                  ? StreamBuilder<DocumentSnapshot>(
+                                      stream: userProfile
+                                          .doc(FirebaseAuth
+                                              .instance.currentUser.uid
+                                              .toString())
+                                          .snapshots(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.data == null)
+                                          return FlatButton(
+                                              onPressed: () {},
+                                              child: Text('Add to watchList'),
+                                              color: Colors.grey);
+                                        return Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: Colors.grey.shade800,
+                                            ),
+                                            margin: EdgeInsets.only(
+                                                top: 5, bottom: 5),
+                                            child: (containsShow(snapshot) ==
+                                                    false)
+                                                ? FlatButton(
+                                                    onPressed: () {
+                                                      (widget.user != null)
+                                                          ? addToWatchList(
+                                                              context)
+                                                          : {};
+                                                    },
+                                                    child: Text(
+                                                        'Add to watchlist'),
+                                                    color: Colors.blue)
+                                                : FlatButton(
+                                                    onPressed: () {
+                                                      (widget.user != null)
+                                                          ? removeFromWatchList(
+                                                              context)
+                                                          : {};
+                                                    },
+                                                    child: Text(
+                                                        'Remove from watchlist'),
+                                                    color: Colors.red));
+                                      })
+                                  : FlatButton(
+                                      onPressed: () {},
+                                      child: Text('Add to watchList'),
+                                      color: Colors.grey), //Rating e.g R
                               // RaisedButton(
                               //   onPressed: null,
                               //   child: Text('Recommendations'),
@@ -421,13 +575,15 @@ class _DetailBodyState extends State<DetailBody> {
                       margin: EdgeInsets.symmetric(horizontal: 5),
                       child: Padding(
                         padding: const EdgeInsets.all(3.0),
-                        child: (returnList[6] != null) ? ReadMoreText(
-                          returnList[6],
-                          style: TextStyle(fontSize: 18),
-                          trimLines: 4,
-                          trimMode: TrimMode.Line,
-                          colorClickableText: Colors.blue,
-                        ) : Text("No Info"),
+                        child: (returnList[6] != null)
+                            ? ReadMoreText(
+                                returnList[6],
+                                style: TextStyle(fontSize: 18),
+                                trimLines: 4,
+                                trimMode: TrimMode.Line,
+                                colorClickableText: Colors.blue,
+                              )
+                            : Text("No Info"),
                       ),
                     ),
                     SizedBox(
@@ -435,109 +591,110 @@ class _DetailBodyState extends State<DetailBody> {
                         color: Colors.white,
                       ),
                     ),
-
                   ],
                 );
-              }
-
-          ),
+              }),
           renderYoutube(returnList[7]),
           SizedBox(
             child: Divider(
               color: Colors.white,
             ),
           ),
-
-          StreamBuilder<DocumentSnapshot> (
-              stream: database.theDoc.doc(widget.animeID.toString()).snapshots(),
+          StreamBuilder<DocumentSnapshot>(
+              stream:
+                  database.theDoc.doc(widget.animeID.toString()).snapshots(),
               builder: (context, snapshot) {
                 return SingleChildScrollView(
                   child: Column(
                     children: [
+                      (widget.user == null)
+                          ? FlatButton(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  side: BorderSide(color: Colors.white)),
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext buildContext) {
+                                      return AlertDialog(
+                                        title: Text('Sign in to comment'),
+                                        actions: [
+                                          FlatButton(
+                                            textColor: Colors.white,
+                                            onPressed: () {
+                                              Navigator.of(context,
+                                                      rootNavigator: true)
+                                                  .pop(buildContext);
 
-                      (widget.user == null) ?
-                      FlatButton(
-                          shape:  RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(color: Colors.white)
-                          ),
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext buildContext) {
-                                  return AlertDialog(
-                                    title: Text('Sign in to comment'),
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          LoginPage()));
+                                            },
+                                            child: Text('Login'),
+                                          ),
+                                          FlatButton(
+                                            textColor: Colors.white,
+                                            onPressed: () {
+                                              Navigator.of(context,
+                                                      rootNavigator: true)
+                                                  .pop(buildContext);
 
-                                    actions: [
-                                      FlatButton(
-                                        textColor: Colors.white,
-                                        onPressed: () {
-                                          Navigator.of(context, rootNavigator: true).pop(buildContext);
-
-                                          Navigator.push(context,
-                                              MaterialPageRoute(builder: (context) => LoginPage()));
-                                        },
-                                        child: Text('Login'),
-                                      ),
-                                      FlatButton(
-                                        textColor: Colors.white,
-                                        onPressed: () {
-                                          Navigator.of(context, rootNavigator: true).pop(buildContext);
-
-                                          Navigator.push(context,
-                                              MaterialPageRoute(builder: (context) => SignupPage()));
-                                        },
-                                        child: Text('Sign up'),
-                                      ),
-                                    ],
-                                  );
-                                }
-                            );
-                          },
-                          child: Text("Log in or Sign up to comment"))
-
-                          :
-
-                      Container(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                                maxHeight: 300
-                            ),
-                            child: TextField(
-                              controller: myController,
-                              keyboardType: TextInputType.multiline,
-                              textInputAction: TextInputAction.done,
-                              minLines: 1,
-                              maxLines: 5,
-                              onSubmitted: (value) {(commentExists(snapshot)) ? showFlushBar(context: context, text: 'You have already commented! Please remove yours first!', color: Colors.red) : newComment(value)/*database.comment(value, FirebaseAuth.instance.currentUser.uid, FirebaseAuth.instance.currentUser.displayName, FirebaseAuth.instance.currentUser.photoURL)*/; myController.clear();},
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-                                hintText: "Enter a comment",
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(32),
-
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SignupPage()));
+                                            },
+                                            child: Text('Sign up'),
+                                          ),
+                                        ],
+                                      );
+                                    });
+                              },
+                              child: Text("Log in or Sign up to comment"))
+                          : Container(
+                              child: ConstrainedBox(
+                              constraints: BoxConstraints(maxHeight: 300),
+                              child: TextField(
+                                controller: myController,
+                                keyboardType: TextInputType.multiline,
+                                textInputAction: TextInputAction.done,
+                                minLines: 1,
+                                maxLines: 5,
+                                onSubmitted: (value) {
+                                  (commentExists(snapshot))
+                                      ? showFlushBar(
+                                          context: context,
+                                          text:
+                                              'You have already commented! Please remove yours first!',
+                                          color: Colors.red)
+                                      : newComment(
+                                          value) /*database.comment(value, FirebaseAuth.instance.currentUser.uid, FirebaseAuth.instance.currentUser.displayName, FirebaseAuth.instance.currentUser.photoURL)*/;
+                                  myController.clear();
+                                },
+                                decoration: InputDecoration(
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(20, 15, 20, 15),
+                                  hintText: "Enter a comment",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(32),
+                                  ),
                                 ),
-
                               ),
-                            ),
-                          )
-                      ),
-                      if(widget.user != null) renderUserComment(snapshot),
-                      Column(children: renderCommentList(snapshot), crossAxisAlignment: CrossAxisAlignment.start),
+                            )),
+                      if (widget.user != null) renderUserComment(snapshot),
+                      Column(
+                          children: renderCommentList(snapshot),
+                          crossAxisAlignment: CrossAxisAlignment.start),
                     ],
                   ),
                 );
-
-
-
-              }
-          )
-
+              })
         ],
       );
-    }
-
-    else {
+    } else {
       return Center(
         child: Container(
           child: Column(
@@ -558,11 +715,8 @@ class _DetailBodyState extends State<DetailBody> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: renderPage()
-    );
+    return Scaffold(body: renderPage());
   }
 }
