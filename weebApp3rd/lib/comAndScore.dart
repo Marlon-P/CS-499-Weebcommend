@@ -13,13 +13,13 @@ class comAndScore{
   }
 
 
-  void comment(String userComment, String userID, String userName){
-    Map tempMap = {'comment': userComment, 'userID': userID, 'userName': userName};
+  void comment(String userComment, String userID, String userName, String userImage){
+    Map tempMap = {'comment': userComment, 'userID': userID, 'userName': userName, 'image': userImage};
     theDoc.doc(mal_ID.toString()).update({'comments': FieldValue.arrayUnion([tempMap])});
   }
 
-  void deleteComment(String userComment, String userID, String userName){
-    Map tempMap = {'comment': userComment, 'userID': userID, 'userName': userName};
+  void deleteComment(String userComment, String userID, String userName, String userImage){
+    Map tempMap = {'comment': userComment, 'userID': userID, 'userName': userName, 'image': userImage};
     theDoc.doc(mal_ID.toString()).update({'comments': FieldValue.arrayRemove([tempMap])});
   }
 

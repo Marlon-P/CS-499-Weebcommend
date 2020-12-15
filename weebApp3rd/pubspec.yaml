@@ -40,6 +40,8 @@ dependencies:
   flutter_facebook_auth: ^1.0.2+1
   flappy_search_bar: ^1.7.2
   flushbar: ^1.10.4
+  image_picker: ^0.6.0+17
+  firebase_storage: ^5.2.0
 
 
   # The following adds the Cupertino Icons font to your application.

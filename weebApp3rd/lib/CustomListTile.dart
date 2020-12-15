@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:weeb_app/services/auth.dart';
 import 'package:weeb_app/signup_page.dart';
+import 'package:provider/provider.dart';
 
 import 'login_page.dart';
 import 'user_page.dart';
@@ -34,7 +36,7 @@ class CustomListTile extends StatelessWidget {
             await _auth.signOut();
           } else if (text == 'My Watchlist'){
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => UserPage()));
+                MaterialPageRoute(builder: (context) => UserPage(FirebaseAuth.instance.currentUser.uid,Provider.of<User>(context))));
           }
         },
         child: IgnorePointer(

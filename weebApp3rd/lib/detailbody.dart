@@ -126,7 +126,7 @@ class _DetailBodyState extends State<DetailBody> {
         for (int i = 0; i < sata['comments'].length; i++) {
           if (sata['comments'][i].containsValue(
               FirebaseAuth.instance.currentUser.uid)) {
-            return CommentTile(FirebaseAuth.instance.currentUser.uid,sata['comments'][i]['userName'],sata['comments'][i]['comment'],true,deleteUserComment);
+            return CommentTile(FirebaseAuth.instance.currentUser.uid,sata['comments'][i]['userName'],sata['comments'][i]['comment'],true,deleteUserComment,sata['comments'][i]['image']);
           }
         }
         return Text('');
@@ -136,8 +136,8 @@ class _DetailBodyState extends State<DetailBody> {
     else {return Text('');}
   }
 
-  void deleteUserComment(String comment, String userID, String userName){
-    database.deleteComment(comment, userID, userName);
+  void deleteUserComment(String comment, String userID, String userName, String userImage){
+    database.deleteComment(comment, userID, userName, userImage);
   }
 
 
@@ -170,7 +170,7 @@ class _DetailBodyState extends State<DetailBody> {
         }
         if(sata['comments'].length > 0){
           sata['comments'].forEach((e){tempList.add(
-              CommentTile('no_user',e['userName'],e['comment'],false,deleteUserComment));
+              CommentTile(e['userID'],e['userName'],e['comment'],false,deleteUserComment,e['image']));
           });
           return tempList.reversed.toList();
         }
@@ -213,6 +213,13 @@ class _DetailBodyState extends State<DetailBody> {
     }
     else
     {return 0;}
+  }
+
+  void newComment(String val) async{
+    var personRef = FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser.uid);
+    DocumentSnapshot profile = await personRef.get();
+    database.comment(val, FirebaseAuth.instance.currentUser.uid, profile['username'], profile['image']);
+
   }
 
   void addToWatchList(context){
@@ -322,7 +329,7 @@ class _DetailBodyState extends State<DetailBody> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: Text(
-                                    (returnList[3] != null) ? returnList[3].toString() : "----",
+                                    (returnList[3] != null) ? 'Episodes: ' + returnList[3].toString() : "----",
                                     style: TextStyle(fontSize: 15),
                                   ),
                                 ),
@@ -338,10 +345,7 @@ class _DetailBodyState extends State<DetailBody> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(3.0),
-                                        child: Icon(
-                                          Icons.star,
-                                          color: Colors.yellow,
-                                        ),
+                                        child: Text('MAL',style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),),
                                       ),
                                       Padding(
                                         padding:
@@ -350,10 +354,7 @@ class _DetailBodyState extends State<DetailBody> {
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(3.0),
-                                        child: Icon(
-                                          Icons.star,
-                                          color: Colors.deepOrange,
-                                        ),
+                                        child: Text('Weeb', style: TextStyle(color: Colors.purpleAccent, fontWeight: FontWeight.bold),),
                                       ),
                                       Padding(
                                         padding:
@@ -508,7 +509,7 @@ class _DetailBodyState extends State<DetailBody> {
                               textInputAction: TextInputAction.done,
                               minLines: 1,
                               maxLines: 5,
-                              onSubmitted: (value) {(commentExists(snapshot)) ? print("already there") : database.comment(value, FirebaseAuth.instance.currentUser.uid, FirebaseAuth.instance.currentUser.displayName); myController.clear();},
+                              onSubmitted: (value) {(commentExists(snapshot)) ? showFlushBar(context: context, text: 'You have already commented! Please remove yours first!', color: Colors.red) : newComment(value)/*database.comment(value, FirebaseAuth.instance.currentUser.uid, FirebaseAuth.instance.currentUser.displayName, FirebaseAuth.instance.currentUser.photoURL)*/; myController.clear();},
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
                                 hintText: "Enter a comment",

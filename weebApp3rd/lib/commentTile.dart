@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'read_more.dart';
+import 'user_page.dart';
+import 'package:provider/provider.dart';
 
 class CommentTile extends StatefulWidget {
   String userName;
@@ -7,7 +10,9 @@ class CommentTile extends StatefulWidget {
   String userID;
   bool isUser;
   Function deleteComment;
-  CommentTile(this.userID,this.userName,this.comment,this.isUser,this.deleteComment);
+  String userImage;
+
+  CommentTile(this.userID,this.userName,this.comment,this.isUser,this.deleteComment,this.userImage);
   @override
   _CommentTileState createState() => _CommentTileState();
 }
@@ -37,12 +42,16 @@ class _CommentTileState extends State<CommentTile> {
                 child: Expanded(
                   child: Column(
                     children: [
-                      CircleAvatar(
+                      InkWell(
+                        onTap: (){Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (context) => (UserPage(widget.userID,Provider.of<User>(context)))));},
+                        child: CircleAvatar(
                         radius: 30,
                         backgroundColor: Colors.white,
-                        child: Image.network('https://robohash.org/${widget.userName}')
+                        child: Image.network(widget.userImage),
                       ),
-
+                      )
                     ],
                   ),
                 ),
@@ -73,7 +82,7 @@ class _CommentTileState extends State<CommentTile> {
                     Icons.delete,
                     color: Colors.white,
                   ),
-                  onPressed: () {widget.deleteComment(widget.comment,widget.userID,widget.userName);},
+                  onPressed: () {widget.deleteComment(widget.comment,widget.userID,widget.userName,widget.userImage);},
                   tooltip: 'Delete comment',
                 ),
               ),

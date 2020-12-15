@@ -40,8 +40,8 @@ class AuthService {
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: pass);
       User user = result.user;
       if (user != null) {
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : email, 'watchlist' : []});
-        user.updateProfile(displayName: email, photoURL: '');
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'image' : 'https://firebasestorage.googleapis.com/v0/b/weebcommend.appspot.com/o/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg?alt=media&token=7a818bc5-3668-4fd1-afe1-ff7a76a36af8','username' : email, 'watchlist' : []});
+        user.updateProfile(displayName: email, photoURL: 'https://firebasestorage.googleapis.com/v0/b/weebcommend.appspot.com/o/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg?alt=media&token=7a818bc5-3668-4fd1-afe1-ff7a76a36af8');
       }
       signInMethod = 'email';
       return user;
@@ -88,7 +88,7 @@ class AuthService {
         cRef.get().then((data) async {
 
         if (!data.exists) {
-          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : user.email, 'watchlist' : []});  user.updateProfile(displayName: user.email, photoURL: ''); print('new user');
+          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'image': 'https://firebasestorage.googleapis.com/v0/b/weebcommend.appspot.com/o/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg?alt=media&token=7a818bc5-3668-4fd1-afe1-ff7a76a36af8', 'username' : user.email, 'watchlist' : []});  user.updateProfile(displayName: user.email, photoURL: 'https://firebasestorage.googleapis.com/v0/b/weebcommend.appspot.com/o/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg?alt=media&token=7a818bc5-3668-4fd1-afe1-ff7a76a36af8'); print('new user');
         } else {
           print('returning user');
         }
@@ -124,7 +124,7 @@ class AuthService {
 
         DocumentReference dRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
         dRef.get().then((data) async {
-          data.exists ? () {print('user exists');} :  await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'username' : user.email, 'watchlist' : []});     user.updateProfile(displayName: user.email, photoURL: ''); print('new user');
+          data.exists ? () {print('user exists');} :  await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'image': 'https://firebasestorage.googleapis.com/v0/b/weebcommend.appspot.com/o/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg?alt=media&token=7a818bc5-3668-4fd1-afe1-ff7a76a36af8','username' : user.email, 'watchlist' : []}); user.updateProfile(displayName: user.email, photoURL: 'https://firebasestorage.googleapis.com/v0/b/weebcommend.appspot.com/o/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg?alt=media&token=7a818bc5-3668-4fd1-afe1-ff7a76a36af8'); print('new user');
 
         }) ;
       }
