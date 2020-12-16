@@ -142,7 +142,7 @@ class _DetailBodyState extends State<DetailBody> {
                 sata['comments'][i]['comment'],
                 true,
                 deleteUserComment,
-                FirebaseAuth.instance.currentUser.photoURL);
+                sata['comments'][i]['image']);
           }
         }
         return Text('');
@@ -432,32 +432,48 @@ class _DetailBodyState extends State<DetailBody> {
                                             ? returnList[4].toString()
                                             : "----"),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(3.0),
-                                        child: Text(
-                                          'Weeb',
-                                          style: TextStyle(
-                                              color: Colors.purpleAccent,
-                                              fontWeight: FontWeight.bold),
+                                    ],
+                                  ),
+                                ),
+                              ), //rating score
+                              SizedBox(height: 5),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.grey.shade800,
+                                ),
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(3.0),
+                                          child: Text(
+                                            'Weeb',
+                                            style: TextStyle(
+                                                color: Colors.purpleAccent,
+                                                fontWeight: FontWeight.bold),
+                                          ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 3.0),
-                                        child: Text((displayScores(snapshot) !=
-                                                0)
-                                            ? displayScores(snapshot).toString()
-                                            : "----"),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 36.0),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 3.0),
+                                          child: Text(
+                                              (displayScores(snapshot) != 0)
+                                                  ? displayScores(snapshot)
+                                                      .toString()
+                                                  : "----"),
+                                        ),
+                                      ]),
+                                      Container(
+                                        alignment: Alignment.centerRight,
                                         child: DropdownButton<int>(
                                           value:
                                               (displayYourScore(snapshot) != 0)
                                                   ? displayYourScore(snapshot)
                                                   : 1,
-                                          icon: Icon(Icons.arrow_downward),
+                                          icon: Icon(Icons.arrow_drop_down),
                                           onChanged: (int newValue) {
                                             (displayYourScore(snapshot) == 0)
                                                 ? database.Updatescore(
@@ -485,10 +501,8 @@ class _DetailBodyState extends State<DetailBody> {
                                                 }).toList(),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ), //rating score
+                                    ]),
+                              ),
                               Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
@@ -505,6 +519,7 @@ class _DetailBodyState extends State<DetailBody> {
                                   ),
                                 ),
                               ),
+
                               (widget.user != null && userProfile != null)
                                   ? StreamBuilder<DocumentSnapshot>(
                                       stream: userProfile
