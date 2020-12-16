@@ -142,6 +142,7 @@ class _DetailBodyState extends State<DetailBody> {
                 sata['comments'][i]['comment'],
                 true,
                 deleteUserComment,
+                updateUserComment,
                 sata['comments'][i]['image']);
           }
         }
