@@ -1,5 +1,3 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,7 +38,7 @@ class AuthService {
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: pass);
       User user = result.user;
       if (user != null) {
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'image' : 'https://robohash.org/${email}','username' : email, 'watchlist' : []});
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'image' : 'https://robohash.org/${email}','username' : email, 'watchlist' : [], 'commentList' : [], 'scoreList': []});
         user.updateProfile(displayName: email, photoURL: 'https://robohash.org/${email}');
       }
       signInMethod = 'email';
@@ -88,7 +86,7 @@ class AuthService {
         cRef.get().then((data) async {
 
         if (!data.exists) {
-          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'image': 'https://firebasestorage.googleapis.com/v0/b/weebcommend.appspot.com/o/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg?alt=media&token=7a818bc5-3668-4fd1-afe1-ff7a76a36af8', 'username' : user.email, 'watchlist' : []});  user.updateProfile(displayName: user.email, photoURL: 'https://firebasestorage.googleapis.com/v0/b/weebcommend.appspot.com/o/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg?alt=media&token=7a818bc5-3668-4fd1-afe1-ff7a76a36af8'); print('new user');
+          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'image': 'https://robohash.org/${user.email}', 'username' : user.email, 'watchlist' : [], 'commentList' : [], 'scoreList': []});  user.updateProfile(displayName: user.email, photoURL: 'https://robohash.org/${user.email}'); print('new user');
         } else {
           print('returning user');
         }
@@ -124,11 +122,13 @@ class AuthService {
 
         DocumentReference dRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
         dRef.get().then((data) async {
-          data.exists ? () {print('user exists');} :  await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'image': 'https://firebasestorage.googleapis.com/v0/b/weebcommend.appspot.com/o/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg?alt=media&token=7a818bc5-3668-4fd1-afe1-ff7a76a36af8','username' : user.email, 'watchlist' : []}); user.updateProfile(displayName: user.email, photoURL: 'https://firebasestorage.googleapis.com/v0/b/weebcommend.appspot.com/o/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg?alt=media&token=7a818bc5-3668-4fd1-afe1-ff7a76a36af8'); print('new user');
-
-        }) ;
-      }
-
+          if (!data.exists) {
+            await FirebaseFirestore.instance.collection('users').doc(user.uid).set({'image': 'https://robohash.org/${user.email}', 'username' : user.email, 'watchlist' : [], 'commentList' : [], 'scoreList': []});  user.updateProfile(displayName: user.email, photoURL: 'https://robohash.org/${user.email}'); print('new user');
+          } else {
+            print('returning user');
+            print(user.displayName);
+          }
+      });}
 
 
       return user;
@@ -151,3 +151,5 @@ class AuthService {
     }
   }
 }
+
+

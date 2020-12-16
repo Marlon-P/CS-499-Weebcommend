@@ -116,17 +116,6 @@ class _DetailBodyState extends State<DetailBody> {
     }
   }
 
-  Widget renderComments(var snapshot) {
-    if (snapshot.hasData && snapshot.data.data() != null) {
-      Map data = snapshot.data.data();
-      return Container(
-        child: Text(data['comments'].toString() ?? 'default'),
-      );
-    } else {
-      return Text("Loading");
-    }
-  }
-
   Widget renderUserComment(var snapshot) {
     if (snapshot.hasData &&
         snapshot.data.data() != null &&
@@ -143,7 +132,7 @@ class _DetailBodyState extends State<DetailBody> {
                 true,
                 deleteUserComment,
                 updateUserComment,
-                sata['comments'][i]['image']);
+                FirebaseAuth.instance.currentUser.photoURL);
           }
         }
         return Text('');
@@ -159,7 +148,7 @@ class _DetailBodyState extends State<DetailBody> {
       String comment, String userID, String userName, String userImage) {
     database.deleteComment(comment, userID, userName, userImage);
   }
-  
+
   void updateUserComment(String oldComment, String userID, String userName, String userImage, String editedComment ){
     database.updateComment(oldComment, userID, userName, userImage, editedComment);
   }
@@ -200,7 +189,7 @@ class _DetailBodyState extends State<DetailBody> {
         if (sata['comments'].length > 0) {
           sata['comments'].forEach((e) {
             tempList.add(CommentTile(e['userID'], e['userName'], e['comment'],
-                false, deleteUserComment, updateUserComment,e['image']));
+                false, deleteUserComment,updateUserComment, e['image']));
           });
           return tempList.reversed.toList();
         } else {
@@ -252,13 +241,11 @@ class _DetailBodyState extends State<DetailBody> {
     }
   }
 
-  void newComment(String val) async {
-    var personRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser.uid);
-    DocumentSnapshot profile = await personRef.get();
+  void newComment(String val) //async
+  {
+    print(FirebaseAuth.instance.currentUser.displayName);
     database.comment(val, FirebaseAuth.instance.currentUser.uid,
-        profile['username'], profile['image']);
+        FirebaseAuth.instance.currentUser.displayName, FirebaseAuth.instance.currentUser.photoURL);
   }
 
   void addToWatchList(context) {
@@ -413,6 +400,29 @@ class _DetailBodyState extends State<DetailBody> {
                                 ),
                               ), //episodes
                               Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.grey.shade800,
+                                  ),
+                                  margin: EdgeInsets.only(top: 5),
+                                child: Row(children: <Widget>[Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: Text(
+                                    'MAL',
+                                    style: TextStyle(
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(left: 3.0),
+                                    child: Text((returnList[4] != null)
+                                        ? returnList[4].toString()
+                                        : "----"),
+                                  ),],)
+                              ),
+                              Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                   color: Colors.grey.shade800,
@@ -424,61 +434,29 @@ class _DetailBodyState extends State<DetailBody> {
                                       Padding(
                                         padding: const EdgeInsets.all(3.0),
                                         child: Text(
-                                          'MAL',
+                                          'Weeb',
                                           style: TextStyle(
-                                              color: Colors.blue,
+                                              color: Colors.purpleAccent,
                                               fontWeight: FontWeight.bold),
                                         ),
                                       ),
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(left: 3.0),
-                                        child: Text((returnList[4] != null)
-                                            ? returnList[4].toString()
+                                        child: Text((displayScores(snapshot) !=
+                                                0)
+                                            ? displayScores(snapshot).toString()
                                             : "----"),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ), //rating score
-                              SizedBox(height: 5),
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.grey.shade800,
-                                ),
-                                child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(3.0),
-                                          child: Text(
-                                            'Weeb',
-                                            style: TextStyle(
-                                                color: Colors.purpleAccent,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 3.0),
-                                          child: Text(
-                                              (displayScores(snapshot) != 0)
-                                                  ? displayScores(snapshot)
-                                                      .toString()
-                                                  : "----"),
-                                        ),
-                                      ]),
-                                      Container(
-                                        alignment: Alignment.centerRight,
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 36.0),
                                         child: DropdownButton<int>(
                                           value:
                                               (displayYourScore(snapshot) != 0)
                                                   ? displayYourScore(snapshot)
                                                   : 1,
-                                          icon: Icon(Icons.arrow_drop_down),
+                                          icon: Icon(Icons.arrow_downward),
                                           onChanged: (int newValue) {
                                             (displayYourScore(snapshot) == 0)
                                                 ? database.Updatescore(
@@ -506,8 +484,10 @@ class _DetailBodyState extends State<DetailBody> {
                                                 }).toList(),
                                         ),
                                       ),
-                                    ]),
-                              ),
+                                    ],
+                                  ),
+                                ),
+                              ), //rating score
                               Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
@@ -524,7 +504,6 @@ class _DetailBodyState extends State<DetailBody> {
                                   ),
                                 ),
                               ),
-
                               (widget.user != null && userProfile != null)
                                   ? StreamBuilder<DocumentSnapshot>(
                                       stream: userProfile

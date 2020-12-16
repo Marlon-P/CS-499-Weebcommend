@@ -15,9 +15,7 @@ class CommentTile extends StatefulWidget {
   TextEditingController textEditingController;
 
   CommentTile(this.userID, this.userName, this.comment, this.isUser,
-      this.deleteComment, this.updateComment, this.userImage){
-    textEditingController = TextEditingController(text:comment);
-  }
+      this.deleteComment, this.updateComment, this.userImage){textEditingController = TextEditingController(text: comment);}
   @override
   _CommentTileState createState() => _CommentTileState();
 }
@@ -67,26 +65,26 @@ class _CommentTileState extends State<CommentTile> {
               ),
               Expanded(
                   child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      widget.userName,
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                      child: ReadMoreText(
-                        widget.comment,
-                        trimLength: 60,
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          widget.userName,
+                          style: TextStyle(color: Colors.grey),
+                        ),
                       ),
-                    ),
-                  ),
-                ],
-              )),
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                          child: ReadMoreText(
+                            widget.comment,
+                            trimLength: 60,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )),
               if (widget.isUser)
                 Container(
                   child: Column(
@@ -115,7 +113,7 @@ class _CommentTileState extends State<CommentTile> {
                                           print(editedComment);
                                           widget.updateComment(widget.comment, widget.userID, widget.userName, widget.userImage, editedComment);
                                           Navigator.of(context,
-                                                  rootNavigator: true)
+                                              rootNavigator: true)
                                               .pop(buildContext);
                                         },
                                         child: Text('Comment'),

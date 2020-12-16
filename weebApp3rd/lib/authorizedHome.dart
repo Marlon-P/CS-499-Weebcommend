@@ -331,6 +331,7 @@ class AnimeThumbNails extends StatelessWidget {
   double height;
   bool cache;
   var additionalAnimeInfo;
+  String score;
   fetchMore()async{
     var jikan = Jikan();
     var moreinfo = jikan.getAnimeInfo(animeID);
@@ -339,7 +340,7 @@ class AnimeThumbNails extends StatelessWidget {
 
   @override
   AnimeThumbNails(String this.imgUrl, String this.animeTitle, int this.animeID,
-      {@required bool this.cache, double this.height=250});
+      {@required bool this.cache, double this.height=250, String this.score = ''});
 
   AnimeThumbNails.search_rec([Search schAnime, Recommendation recAnime]) {
     if (schAnime != null) {
@@ -391,11 +392,13 @@ class AnimeThumbNails extends StatelessWidget {
                 Container(
                   alignment: Alignment.center,
                   width: (height * 0.64),
-                  child: Text(
+                  child: Row(children: <Widget>[Expanded(child: Text(
                     animeTitle,
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis,
-                  ),
+                  )),
+                    //if(score != '') Icon(Icons.star, color: Colors.yellow, size: 20),
+                    if(score != '') Text(score, style: TextStyle(color: Colors.yellow),)],)
                 ),
               ]),
         ],
@@ -459,3 +462,4 @@ Row TopViewMore(
     )
   ]);
 }
+
