@@ -22,6 +22,12 @@ class comAndScore{
     Map tempMap = {'comment': userComment, 'userID': userID, 'userName': userName, 'image': userImage};
     theDoc.doc(mal_ID.toString()).update({'comments': FieldValue.arrayRemove([tempMap])});
   }
+  void updateComment(String oldComment, String userID, String userName, String userImage, String editedComment){
+    Map tempMap = {'comment': oldComment, 'userID': userID, 'userName': userName, 'image': userImage};
+    theDoc.doc(mal_ID.toString()).update({'comments': FieldValue.arrayRemove([tempMap])});
+    tempMap['comment'] = editedComment;
+    theDoc.doc(mal_ID.toString()).update({'comments': FieldValue.arrayUnion([tempMap])});
+  }
 
   void Updatescore(String userID, int score, int oldValue, bool newOrUpdate)
   {
