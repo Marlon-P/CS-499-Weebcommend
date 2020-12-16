@@ -158,6 +158,10 @@ class _DetailBodyState extends State<DetailBody> {
       String comment, String userID, String userName, String userImage) {
     database.deleteComment(comment, userID, userName, userImage);
   }
+  
+  void updateUserComment(String oldComment, String userID, String userName, String userImage, String editedComment ){
+    database.updateComment(oldComment, userID, userName, userImage, editedComment);
+  }
 
   bool commentExists(var snapshot) {
     if (snapshot.hasData &&
@@ -195,7 +199,7 @@ class _DetailBodyState extends State<DetailBody> {
         if (sata['comments'].length > 0) {
           sata['comments'].forEach((e) {
             tempList.add(CommentTile(e['userID'], e['userName'], e['comment'],
-                false, deleteUserComment, e['image']));
+                false, deleteUserComment, updateUserComment,e['image']));
           });
           return tempList.reversed.toList();
         } else {
