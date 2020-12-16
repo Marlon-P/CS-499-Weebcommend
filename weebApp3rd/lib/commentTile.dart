@@ -10,15 +10,20 @@ class CommentTile extends StatefulWidget {
   String userID;
   bool isUser;
   Function deleteComment;
+  Function updateComment;
   String userImage;
+  TextEditingController textEditingController;
 
   CommentTile(this.userID, this.userName, this.comment, this.isUser,
-      this.deleteComment, this.userImage);
+      this.deleteComment, this.updateComment, this.userImage){
+    textEditingController = TextEditingController(text:comment);
+  }
   @override
   _CommentTileState createState() => _CommentTileState();
 }
 
 class _CommentTileState extends State<CommentTile> {
+  String editedComment;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -52,7 +57,7 @@ class _CommentTileState extends State<CommentTile> {
                         },
                         child: CircleAvatar(
                           radius: 30,
-                          backgroundColor: Colors.transparent,
+                          backgroundColor: Colors.white,
                           backgroundImage: NetworkImage(widget.userImage),
                         ),
                       )
@@ -84,16 +89,53 @@ class _CommentTileState extends State<CommentTile> {
               )),
               if (widget.isUser)
                 Container(
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      widget.deleteComment(widget.comment, widget.userID,
-                          widget.userName, widget.userImage);
-                    },
-                    tooltip: 'Delete comment',
+                  child: Column(
+                    children: [
+                      IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext buildContext) {
+                                  return AlertDialog(
+
+                                    title: Text('Editing Comment'),
+                                    content: TextField(
+                                      minLines: 1,
+                                      maxLines: 15,
+                                      controller: widget.textEditingController,
+                                    ),
+                                    actions: [
+                                      FlatButton(
+                                        textColor: Colors.white,
+                                        onPressed: () {
+                                          setState(() {
+                                            editedComment = widget.textEditingController.text;
+                                          });
+                                          print(editedComment);
+                                          widget.updateComment(widget.comment, widget.userID, widget.userName, widget.userImage, editedComment);
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop(buildContext);
+                                        },
+                                        child: Text('Comment'),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          }),
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          widget.deleteComment(widget.comment, widget.userID,
+                              widget.userName, widget.userImage);
+                        },
+                        tooltip: 'Delete comment',
+                      ),
+                    ],
                   ),
                 ),
             ],
