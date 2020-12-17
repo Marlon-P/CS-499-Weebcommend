@@ -209,7 +209,7 @@ class _UserPageState extends State<UserPage> {
           .snapshots(),
       builder: (context, snapshot) {
         return Scaffold(
-          appBar: AppBar(),
+          appBar: AppBar(), //
           body: SafeArea(
             child: Center(
               child: Column(
@@ -226,19 +226,24 @@ class _UserPageState extends State<UserPage> {
                               : getImage(snapshot)),
                           backgroundColor: Colors.black,
                         )),
-                    Positioned(
-                        bottom: 1,
-                        right: 1,
-                        child: IconButton(
-                          icon: Icon(Icons.camera_alt),
-                          onPressed: () {
-                            (widget.user != null &&
-                                    widget.pid ==
-                                        FirebaseAuth.instance.currentUser.uid)
-                                ? newProfilePic()
-                                : {};
-                          },
-                        ))
+                    (widget.user !=
+                                null && //don't show camera icon if you are viewing a user's page that is not your own
+                            widget.pid == FirebaseAuth.instance.currentUser.uid)
+                        ? Positioned(
+                            bottom: 1,
+                            right: 1,
+                            child: IconButton(
+                              icon: Icon(Icons.camera_alt),
+                              onPressed: () {
+                                (widget.user != null &&
+                                        widget.pid ==
+                                            FirebaseAuth
+                                                .instance.currentUser.uid)
+                                    ? newProfilePic()
+                                    : {};
+                              },
+                            ))
+                        : Positioned(bottom: 1, right: 1, child: Text('')),
                   ]),
                   Container(
                       alignment: Alignment.center,
